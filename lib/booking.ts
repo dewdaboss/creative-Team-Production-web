@@ -21,6 +21,11 @@ export const bookingSchema = z.object({
     .url("Reference link must be a valid URL")
     .optional()
     .or(z.literal("").transform(() => undefined)),
+  preferredDate: z
+    .string()
+    .max(60)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
   notes: z.string().max(1000).optional().or(z.literal("").transform(() => undefined)),
   /** honeypot — must stay empty */
   company: z.string().max(0).optional().or(z.literal("")),

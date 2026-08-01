@@ -44,6 +44,7 @@ export async function POST(req: Request) {
       packageId: parsed.data.packageId,
       location: parsed.data.location,
       referenceUrl: parsed.data.referenceUrl,
+      preferredDate: parsed.data.preferredDate,
       notes: parsed.data.notes,
       ...priced,
     };

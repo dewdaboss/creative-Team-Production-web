@@ -1,14 +1,16 @@
 import { Aperture } from "lucide-react";
 
 const WORDS = [
-  "Cinematography",
+  "Cinematic Reels",
   "Photography",
-  "Reels Production",
-  "Digital Marketing",
+  "Ad Shoots",
+  "Branding",
   "Product Shoots",
   "Event Coverage",
-  "Brand Films",
+  "YouTube Production",
   "Social Growth",
+  "Podcast Shoots",
+  "Digital Marketing",
 ];
 
 export default function Marquee({ reverse = false }: { reverse?: boolean }) {

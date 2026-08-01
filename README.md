@@ -1,6 +1,8 @@
 # 🎬 Creative Team Production — Website
 
-A cinematic, high-converting agency website for **Cinematography, Photography and Digital Marketing** — dark mode with black, white and dark-neon-green, an interactive 3D film-gear background, dynamic pricing, and a full booking automation pipeline.
+**Create • Shoot • Grow** — the official website of **Creative Team Production**, a premium creative agency in **Indore, Madhya Pradesh** specializing in cinematic content creation, branding, photography, videography, social media management and digital marketing.
+
+Dark mode with black, white and dark-neon-green, an interactive 3D film-gear background, dynamic pricing, and a full booking automation pipeline.
 
 ![Stack](https://img.shields.io/badge/Next.js-15-black) ![Stack](https://img.shields.io/badge/React-19-black) ![Stack](https://img.shields.io/badge/Three.js-R3F-black) ![Stack](https://img.shields.io/badge/Tailwind-3.4-black)
 
@@ -11,6 +13,8 @@ A cinematic, high-converting agency website for **Cinematography, Photography an
 | **Hero** | Vector logo in a premium circular frame (orbiting brand text + aperture iris), floating stat chips, neon marquee |
 | **3D background** | Live Three.js/R3F scene — cinema camera, lens, spotlight, clapperboard and film reels drifting through fog with neon edges, reacting to the pointer. Respects `prefers-reduced-motion` |
 | **Services** | 6 services with live `from ₹` pricing — click a card to pre-load the booking wizard |
+| **About** | Mission, vision, promise, 12-industry grid and the full capabilities catalogue |
+| **Process** | 8-step production pipeline with scroll-driven progress line + booking journey strip |
 | **Booking wizard** | Service → Package → Details with **dynamic pricing** (per-photo, per-hour, flat, monthly and custom-quote modes), quantity steppers, live estimate panel, draft autosave, validation, honeypot + rate limiting |
 | **Automation** | Every lead is saved locally, POSTed to a Google Apps Script webhook (**Google Sheet row + instant owner email**), or sent as a pre-filled **WhatsApp** message. See [AUTOMATION.md](./AUTOMATION.md) |
 | **Portfolio** | Filterable photo/reel gallery with animated layout, branded reel cards (views/duration) and a lightbox that **embeds Instagram reels** when a URL is attached |

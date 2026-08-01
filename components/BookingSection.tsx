@@ -16,6 +16,8 @@ import {
   ChevronRight,
   Send,
   MapPin,
+  CalendarDays,
+  Clock,
   Truck,
   Loader2,
   ShieldCheck,
@@ -50,6 +52,8 @@ interface FormState {
   phone: string;
   email: string;
   location: string;
+  date: string;
+  slot: string;
   referenceUrl: string;
   notes: string;
   company: string; // honeypot
@@ -60,10 +64,14 @@ const EMPTY_FORM: FormState = {
   phone: "",
   email: "",
   location: "",
+  date: "",
+  slot: "",
   referenceUrl: "",
   notes: "",
   company: "",
 };
+
+const TIME_SLOTS = ["Morning · 9 AM – 12 PM", "Afternoon · 12 – 4 PM", "Evening · 4 – 8 PM"];
 
 const DRAFT_KEY = "ctp-booking-draft-v1";
 
@@ -88,6 +96,10 @@ export default function BookingSection() {
   const isInquiry = pkg?.unit === "inquiry";
   const effectiveQty = isPerUnit ? Math.max(qty || (pkg?.defaultQty ?? 1), pkg?.minQty ?? 1) : 0;
   const estimate = pkg ? (isPerUnit ? pkg.price * effectiveQty : pkg.price) : 0;
+
+  const preferredDate = form.date
+    ? `${new Date(`${form.date}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}${form.slot ? ` · ${form.slot.split("·")[0].trim()}` : ""}`
+    : "";
 
   /* ---- draft persistence ---- */
   useEffect(() => {
@@ -137,7 +149,7 @@ export default function BookingSection() {
 
   const field = (k: keyof FormState) => ({
     value: form[k],
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value })),
   });
 
@@ -158,6 +170,7 @@ export default function BookingSection() {
           quantity: isPerUnit ? effectiveQty : undefined,
           location: form.location.trim(),
           referenceUrl: form.referenceUrl.trim(),
+          preferredDate: preferredDate || undefined,
           notes: form.notes.trim(),
           company: form.company,
         }),
@@ -202,6 +215,7 @@ export default function BookingSection() {
           phone: form.phone.trim() || "—",
           email: form.email.trim() || undefined,
           referenceUrl: form.referenceUrl.trim() || undefined,
+          preferredDate: preferredDate || undefined,
           notes: form.notes.trim() || undefined,
         })
       : "#";
@@ -507,6 +521,23 @@ export default function BookingSection() {
                           </label>
                           <input id="bk-email" className="input" inputMode="email" placeholder="you@brand.com" {...field("email")} />
                           {touched && !emailOk && <p className="mt-1.5 text-xs text-red-400">That email doesn&apos;t look right.</p>}
+                        </div>
+                        <div>
+                          <label className="label" htmlFor="bk-date">
+                            <CalendarDays size={12} /> Preferred date <span className="text-faint normal-case">(optional)</span>
+                          </label>
+                          <input id="bk-date" type="date" min={new Date().toISOString().split("T")[0]} className="input [color-scheme:dark]" {...field("date")} />
+                        </div>
+                        <div>
+                          <label className="label" htmlFor="bk-slot">
+                            <Clock size={12} /> Preferred time <span className="text-faint normal-case">(optional)</span>
+                          </label>
+                          <select id="bk-slot" className="input appearance-none bg-raise/60" {...field("slot")}>
+                            <option value="">Any time works</option>
+                            {TIME_SLOTS.map((s) => (
+                              <option key={s} value={s}>{s}</option>
+                            ))}
+                          </select>
                         </div>
                         <div>
                           <label className="label" htmlFor="bk-ref">

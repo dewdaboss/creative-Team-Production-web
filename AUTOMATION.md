@@ -7,7 +7,7 @@ Every booking submitted on the site goes through **three channels at once**:
 | **Local leads inbox** | Saved to `data/leads.json`, visible in `/admin → Leads` | ✅ Works out of the box |
 | **Google Sheet** | Lead appended as a new row in your spreadsheet | 5-minute Apps Script setup (below) |
 | **Instant email** | Owner receives the full lead by email | Same setup as the Sheet |
-| **WhatsApp** | Visitor's browser opens WhatsApp with everything pre-filled | ✅ Works out of the box — set `NEXT_PUBLIC_WHATSAPP_NUMBER` |
+| **WhatsApp** | Visitor's browser opens WhatsApp with everything pre-filled | ✅ Works out of the box — `NEXT_PUBLIC_WHATSAPP_NUMBER` defaults to `919755550380` |
 
 ---
 
@@ -26,7 +26,7 @@ no SMTP passwords, no third-party SaaS.
 6. **Connect it to the site** — copy the `/exec` URL into `.env.local`:
    ```bash
    NOTIFY_WEBHOOK_URL=https://script.google.com/macros/s/AKfy.../exec
-   NOTIFY_EMAIL=you@yourdomain.com
+   NOTIFY_EMAIL=creative.team.production.official@gmail.com
    ```
 7. **Restart the dev server** (`npm run dev`) and submit a test booking — you should see
    a row in the Sheet and an email in your inbox within seconds.
@@ -53,7 +53,7 @@ they tap *send* and the lead lands in your WhatsApp chat. Set the number in digi
 international format (no `+`):
 
 ```bash
-NEXT_PUBLIC_WHATSAPP_NUMBER=919876543210
+NEXT_PUBLIC_WHATSAPP_NUMBER=919755550380
 ```
 
 ## Security notes

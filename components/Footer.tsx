@@ -29,9 +29,12 @@ export default function Footer() {
                 <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-neon">Production</p>
               </div>
             </div>
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-mute">
-              Cinematography, photography and digital marketing — crafted in the dark, delivered
-              in neon. Serving shoots across the city and beyond.
+            <p className="mt-4 text-xs font-bold uppercase tracking-[0.26em] text-neon">
+              {site.tagline}
+            </p>
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-mute">
+              Premium creative agency in Indore — cinematic content, photography, branding and
+              digital marketing. We don&apos;t just create content, we help businesses build their brand.
             </p>
             <div className="mt-6 flex gap-3">
               {SOCIALS.map((s) => (

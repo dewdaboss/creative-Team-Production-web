@@ -19,6 +19,7 @@ import {
   LockKeyhole,
   Phone,
   MapPin,
+  CalendarClock,
   Link2,
   Mail,
   Sparkles,
@@ -52,6 +53,7 @@ interface Lead {
   estimate: number;
   location: string;
   referenceUrl?: string;
+  preferredDate?: string;
   notes?: string;
   automation?: { webhook: string };
 }
@@ -337,6 +339,9 @@ function LeadsTab({ onUnauthorized, onCount }: { onUnauthorized: (e: unknown) =>
                   <a href={`mailto:${l.email}`} className="flex items-center gap-1.5 hover:text-neon"><Mail size={12} className="text-neon" />{l.email}</a>
                 )}
                 <span className="flex items-center gap-1.5"><MapPin size={12} className="text-neon" />{l.location}</span>
+                {l.preferredDate && (
+                  <span className="flex items-center gap-1.5"><CalendarClock size={12} className="text-neon" />{l.preferredDate}</span>
+                )}
                 {l.referenceUrl && (
                   <a href={l.referenceUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-neon"><Link2 size={12} className="text-neon" />Reference</a>
                 )}

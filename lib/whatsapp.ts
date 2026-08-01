@@ -13,6 +13,7 @@ export interface WhatsAppLeadParts {
   phone: string;
   email?: string;
   referenceUrl?: string;
+  preferredDate?: string;
   notes?: string;
 }
 
@@ -30,6 +31,7 @@ export function buildWhatsAppLink(parts: WhatsAppLeadParts): string {
     `• Phone: ${parts.phone}`,
     ...(parts.email ? [`• Email: ${parts.email}`] : []),
     `• Location: ${parts.location}`,
+    ...(parts.preferredDate ? [`• Preferred schedule: ${parts.preferredDate}`] : []),
     ...(parts.referenceUrl ? [`• Reference: ${parts.referenceUrl}`] : []),
     ...(parts.notes ? [`• Notes: ${parts.notes}`] : []),
   ];

@@ -61,7 +61,7 @@ function LogoBase({ size = 56, withRingText = false, spinning = true, className 
         {withRingText && (
           <g className={spinning ? "origin-center animate-spin-slower" : ""} style={{ transformOrigin: "60px 60px" }}>
             <text fill="#8cffb9" fontSize="9.2" fontWeight="700" letterSpacing="2.6" style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}>
-              <textPath href={`#${uid}-circ`}>CREATIVE TEAM PRODUCTION • SHOOT • CREATE • GROW •</textPath>
+              <textPath href={`#${uid}-circ`}>CREATIVE TEAM PRODUCTION • CREATE • SHOOT • GROW •</textPath>
             </text>
           </g>
         )}

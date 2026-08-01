@@ -19,7 +19,7 @@
  *             -d '{"name":"Test Lead","phone":"+919876543210","serviceName":"Reels Shoot","packageName":"Premium","estimate":2500,"location":"Noida"}'
  */
 
-const OWNER_EMAIL = "you@yourdomain.com"; // ← where lead emails are sent (NOTIFY_EMAIL is also passed per request)
+const OWNER_EMAIL = "creative.team.production.official@gmail.com"; // ← where lead emails are sent (NOTIFY_EMAIL is also passed per request)
 const SHEET_NAME = "Leads";
 
 const HEADERS = [
