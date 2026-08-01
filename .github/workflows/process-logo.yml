@@ -1,0 +1,67 @@
+name: 🤖 Process brand logo
+
+# Automatically converts any logo image uploaded to public/images/
+# (via GitHub web UI or push) into the transparent site logo + favicon.
+# Just upload a file with "logo" in the name — the bot does the rest.
+
+on:
+  push:
+    branches:
+      - main
+      - arena/019fbced-creative-team-production-web
+    paths:
+      - "public/images/*.jpg"
+      - "public/images/*.jpeg"
+      - "public/images/*.png"
+
+permissions:
+  contents: write
+
+jobs:
+  process-logo:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect & process logo
+        run: |
+          set -e
+          # newest image whose name contains "logo" (excluding the processed output itself)
+          SRC=$(ls -t public/images/*[Ll]ogo*.jpg public/images/*[Ll]ogo*.jpeg public/images/*[Ll]ogo*.png 2>/dev/null | grep -v "public/images/logo.png" | head -1 || true)
+          if [ -z "$SRC" ]; then
+            echo "No logo source image found — nothing to do."
+            exit 0
+          fi
+          if [ -f public/images/logo.png ] && [ "$SRC" -ot public/images/logo.png ]; then
+            echo "public/images/logo.png is already up to date."
+            exit 0
+          fi
+          echo "Processing: $SRC"
+
+          # trim black border → black background to transparency → normalize to 1024²
+          convert "$SRC" -auto-level -trim +repage \
+            -fuzz 14% -transparent black \
+            -resize 1024x1024 \
+            -gravity center -background none -extent 1024x1024 \
+            public/images/logo.png
+
+          # favicon on brand background, replacing the placeholder SVG
+          convert public/images/logo.png -background '#030503' -flatten -resize 512x512 app/icon.png
+          rm -f app/icon.svg
+          echo "src=$SRC" >> "$GITHUB_OUTPUT"
+
+      - name: Commit processed files
+        run: |
+          git config user.name "ctp-logo-bot"
+          git config user.email "bot@creativeteam.production"
+          git add -f public/images/logo.png app/icon.png
+          git rm -q --cached --ignore-unmatch app/icon.svg || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "🤖 Process brand logo — transparent PNG + favicon [skip ci]"
+            git push
+          fi
