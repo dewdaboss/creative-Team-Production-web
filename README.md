@@ -37,6 +37,13 @@ Production: `npm run build && npm start`.
 **Owner login** — go to `/admin` and sign in with `ADMIN_USER` / `ADMIN_PASS`
 (defaults: `admin` / `ctp-admin-2024` — **change before going live**).
 
+## 🌐 FREE hosting (no domain needed)
+
+Website ko **₹0 me live** karo — Vercel free tier + free subdomain
+(`yourname.vercel.app`). Full Hinglish step-by-step guide: **[DEPLOY.md](./DEPLOY.md)**
+— includes free Upstash Redis (persistent leads/gallery) and free Cloudinary
+(admin uploads) setup. The store auto-switches: files locally, Redis on Vercel.
+
 ## 💰 Pricing catalog
 
 All services and packages live in [`lib/pricing.ts`](./lib/pricing.ts) — edit prices,

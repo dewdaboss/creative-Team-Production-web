@@ -2,6 +2,14 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { GalleryItem, Review, SiteStats, VisitorStats } from "./types";
 import { seedGallery, seedReviews, seedStats } from "./seed";
+import { kvEnabled, kvGet, kvSet } from "./kv";
+
+/**
+ * Unified JSON store.
+ *  - Local dev / VPS   → flat files under /data
+ *  - Serverless (Vercel) → Upstash Redis (auto-enabled via KV_REST_API_* env)
+ * Same async interface either way — callers don't care which backend is live.
+ */
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
@@ -9,10 +17,18 @@ async function ensureDir() {
   await fs.mkdir(DATA_DIR, { recursive: true });
 }
 
-/** In-process write queue so concurrent mutations don't corrupt JSON files. */
+/** In-process write queue so concurrent mutations don't interleave. */
 const queues = new Map<string, Promise<unknown>>();
 
+const kvKey = (name: string) => `ctp:${name.replace(/\.json$/, "")}`;
+
 export async function readJSON<T>(name: string, fallback: T): Promise<T> {
+  if (kvEnabled) {
+    const hit = await kvGet<T>(kvKey(name)).catch(() => null);
+    if (hit !== null) return hit;
+    await writeJSON(name, fallback);
+    return fallback;
+  }
   await ensureDir();
   const file = path.join(DATA_DIR, name);
   try {
@@ -27,6 +43,10 @@ export async function readJSON<T>(name: string, fallback: T): Promise<T> {
 export function writeJSON(name: string, data: unknown): Promise<void> {
   const prev = queues.get(name) ?? Promise.resolve();
   const next = prev.then(async () => {
+    if (kvEnabled) {
+      await kvSet(kvKey(name), data);
+      return;
+    }
     await ensureDir();
     const file = path.join(DATA_DIR, name);
     const tmp = file + ".tmp";

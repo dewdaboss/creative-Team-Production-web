@@ -8,6 +8,7 @@ import {
   Package,
   PartyPopper,
   Film,
+  Scissors,
   ArrowUpRight,
   Check,
 } from "lucide-react";
@@ -23,6 +24,7 @@ const ICONS: Record<string, typeof Camera> = {
   Package,
   PartyPopper,
   Film,
+  Scissors,
 };
 
 export default function Services() {

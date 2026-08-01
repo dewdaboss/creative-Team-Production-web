@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { formatINR } from "@/lib/pricing";
+import { site } from "@/lib/site";
 import type { GalleryItem, Review } from "@/lib/types";
 
 /* ------------------------------------------------------------------ */
@@ -386,11 +387,26 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
     setUploading(true);
     setMsg("");
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const d = await api<{ path: string }>("/api/admin/upload", { method: "POST", body: fd });
-      setForm((f) => ({ ...f, src: d.path }));
-      setMsg("Uploaded ✓ — now add a title and publish.");
+      if (site.cloudinaryCloud && site.cloudinaryPreset) {
+        // Serverless mode — straight to Cloudinary (free tier), no local disk needed.
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", site.cloudinaryPreset);
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${site.cloudinaryCloud}/auto/upload`,
+          { method: "POST", body: fd }
+        );
+        const data = (await res.json()) as { secure_url?: string; error?: { message?: string } };
+        if (!res.ok || !data.secure_url) throw new Error(data.error?.message ?? "Cloudinary upload failed.");
+        setForm((f) => ({ ...f, src: data.secure_url! }));
+        setMsg("Uploaded to Cloudinary ✓ — now add a title and publish.");
+      } else {
+        const fd = new FormData();
+        fd.append("file", file);
+        const d = await api<{ path: string }>("/api/admin/upload", { method: "POST", body: fd });
+        setForm((f) => ({ ...f, src: d.path }));
+        setMsg("Uploaded ✓ — now add a title and publish.");
+      }
     } catch (e) {
       setMsg((e as Error).message);
     } finally {

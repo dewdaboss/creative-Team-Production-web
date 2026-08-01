@@ -9,6 +9,7 @@ import {
   Package,
   PartyPopper,
   Film,
+  Scissors,
   Minus,
   Plus,
   Check,
@@ -43,6 +44,7 @@ const ICONS: Record<string, typeof Camera> = {
   Package,
   PartyPopper,
   Film,
+  Scissors,
 };
 
 const STEPS = ["Service", "Package", "Details"] as const;
