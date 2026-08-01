@@ -14,7 +14,7 @@ export const site = {
   instagram:
     process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? "https://www.instagram.com/creative_team_production_",
   youtube: process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "https://youtube.com/@creativeteamproduction",
-  facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "https://facebook.com/creativeteamproduction",
+  facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "https://www.facebook.com/profile.php?id=61588991206692",
   googleReview:
     process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ??
     "https://www.google.com/search?q=creative+team+production+reviews",
