@@ -1,0 +1,56 @@
+[
+  {
+    "id": "rv-1",
+    "name": "Priya Malhotra",
+    "rating": 5,
+    "text": "Booked the monthly Standard package for my boutique. Reels quality is unreal and we gained 3k followers in the first month. The team plans everything — I just show up!",
+    "service": "Monthly Growth",
+    "date": "2026-01-18T09:00:00.000Z",
+    "visible": true
+  },
+  {
+    "id": "rv-2",
+    "name": "Rahul Verma",
+    "rating": 5,
+    "text": "They covered my sister's birthday with the ₹5,000 package. Unlimited photos plus an edited reel that honestly looked like a movie trailer. Worth every rupee.",
+    "service": "Events",
+    "date": "2026-01-11T09:00:00.000Z",
+    "visible": true
+  },
+  {
+    "id": "rv-3",
+    "name": "Sneha Iyer",
+    "rating": 5,
+    "text": "Our café's product shots doubled online orders in two weeks. Moody, premium, exactly the vibe we asked for. Communication was crisp throughout.",
+    "service": "Product Photography",
+    "date": "2025-12-30T09:00:00.000Z",
+    "visible": true
+  },
+  {
+    "id": "rv-4",
+    "name": "Arjun Mehta",
+    "rating": 4,
+    "text": "Premium reels for my fitness page — great hooks and editing. Slight delay on one delivery but they made up for it with a bonus reel. Recommended.",
+    "service": "Reels Shoot",
+    "date": "2025-12-19T09:00:00.000Z",
+    "visible": true
+  },
+  {
+    "id": "rv-5",
+    "name": "Kavitha Reddy",
+    "rating": 5,
+    "text": "The growth meetings alone are worth the Premium package. Analytics, content calendar, everything handled. Finally social media feels like an asset, not a chore.",
+    "service": "Premium Growth",
+    "date": "2025-12-08T09:00:00.000Z",
+    "visible": true
+  },
+  {
+    "id": "rv-6",
+    "name": "Vikram Singh Rathore",
+    "rating": 5,
+    "text": "Shot our anniversary — candid moments captured beautifully, album delivered in 48 hours. True professionals with top-tier gear.",
+    "service": "Photography",
+    "date": "2025-11-26T09:00:00.000Z",
+    "visible": true
+  }
+]
