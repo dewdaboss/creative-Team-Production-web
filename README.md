@@ -89,3 +89,9 @@ public/images/       generated brand imagery & portfolio seeds
   (Supabase/Neon/Mongo) — the accessors (`getGallery`, `getLeads`, …) are the only touchpoints.
 - Image uploads write to `public/uploads/` — same serverless caveat applies; swap the
   `/api/admin/upload` handler for object storage (S3/R2) if needed.
+
+## 📌 Maintenance & PR Status
+
+- **Branch:** `arena/019fc224-creative-team-production-web`
+- **Status:** Verified and updated for Pull Request submission to `main`.
+
