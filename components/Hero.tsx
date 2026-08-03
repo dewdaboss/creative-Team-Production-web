@@ -1,24 +1,56 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Play, ChevronDown, Clapperboard, Star, FolderCheck } from "lucide-react";
-import Logo from "./Logo";
+import { ArrowRight, Play, ChevronDown } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const floatChips = [
-  { icon: Clapperboard, label: "900+ Reels Delivered", pos: "-left-6 top-16 lg:-left-14", delay: 0 },
-  { icon: Star, label: "4.9 Rated by Clients", pos: "-right-4 top-36 lg:-right-12", delay: 1.2 },
-  { icon: FolderCheck, label: "320+ Projects Done", pos: "-left-4 bottom-16 lg:-left-10", delay: 2.1 },
+const POSTERS = [
+  { src: "/images/gallery/wedding.jpg", title: "Wedding Film" },
+  { src: "/images/gallery/portrait.jpg", title: "Neon Editorial" },
+  { src: "/images/gallery/product-perfume.jpg", title: "Aura Campaign" },
+  { src: "/images/gallery/reel-fashion.jpg", title: "Fashion Reel" },
+  { src: "/images/gallery/food.jpg", title: "The Salt Room" },
+  { src: "/images/gallery/product-sneaker.jpg", title: "Velocity Drop" },
+  { src: "/images/gallery/event.jpg", title: "Birthday Bash" },
+  { src: "/images/gallery/reel-dance.jpg", title: "Motion Reel" },
+  { src: "/images/gallery/brand.jpg", title: "CityPulse Audio" },
+  { src: "/images/gallery/bts.jpg", title: "On Set" },
+  { src: "/images/gallery/reel-cooking.jpg", title: "Kitchen Fire" },
+  { src: "/images/gallery/portrait.jpg", title: "Studio Light" },
 ];
 
 export default function Hero() {
   const reduce = useReducedMotion();
   return (
     <section id="top" className="relative flex min-h-screen flex-col overflow-hidden">
-      <div className="mx-auto grid w-full max-w-7xl flex-1 items-center gap-14 px-5 pb-16 pt-32 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:pt-24">
+      {/* Cinematic poster wall background */}
+      <div className="hero-poster-wall pointer-events-none absolute inset-0 z-0" aria-hidden>
+        <div className="hero-poster-grid">
+          {POSTERS.map((p, i) => (
+            <div key={i} className="hero-poster-cell">
+              <div className="relative h-full w-full overflow-hidden rounded-lg">
+                <Image
+                  src={p.src}
+                  alt={p.title}
+                  fill
+                  className="object-cover opacity-40 transition-transform duration-[3s] ease-out hover:scale-105"
+                  sizes="(max-width: 768px) 33vw, 16vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-void/30 to-transparent" />
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* heavy gradient overlay to keep text readable */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_30%_50%,rgba(3,5,3,0.92)_0%,rgba(3,5,3,0.7)_50%,rgba(3,5,3,0.88)_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-void via-void/60 to-transparent" />
+      </div>
+
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 items-center px-5 pb-16 pt-32 sm:px-8 lg:pt-24">
         {/* -------- copy -------- */}
-        <div className="relative z-10 text-center lg:text-left">
+        <div className="relative text-center lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -85,50 +117,6 @@ export default function Hero() {
                 <span className="font-display text-2xl font-bold text-neon text-glow">{num}</span>
                 <span className="text-xs uppercase tracking-[0.18em] text-faint">{label}</span>
               </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* -------- emblem -------- */}
-        <div className="relative z-10 mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.86 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, delay: 0.25, ease: EASE }}
-            className="relative"
-          >
-            <div className="absolute inset-0 -m-10 rounded-full bg-neon/10 blur-3xl animate-pulse-glow" />
-            <motion.div
-              animate={reduce ? undefined : { y: [0, -14, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Logo
-                size={280}
-                withRingText
-                className="[&>svg]:h-[min(70vw,320px)] [&>svg]:w-[min(70vw,320px)]"
-              />
-            </motion.div>
-
-            {floatChips.map((chip, i) => (
-              <motion.div
-                key={chip.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={reduce ? { opacity: 1 } : { opacity: 1, y: [0, -10, 0] }}
-                transition={
-                  reduce
-                    ? { duration: 0.6, delay: 0.6 + i * 0.15 }
-                    : {
-                        opacity: { duration: 0.6, delay: 0.6 + i * 0.15 },
-                        y: { duration: 5.4, repeat: Infinity, ease: "easeInOut", delay: chip.delay },
-                      }
-                }
-                className={`glass absolute ${chip.pos} flex items-center gap-2.5 rounded-2xl px-4 py-3 shadow-card`}
-              >
-                <chip.icon size={16} className="text-neon" />
-                <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-paper">
-                  {chip.label}
-                </span>
-              </motion.div>
             ))}
           </motion.div>
         </div>
