@@ -24,7 +24,7 @@ export default function CtaBand() {
         />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-r from-void via-void/82 to-void/40" />
-      <div className="absolute inset-0 bg-[radial-gradient(700px_300px_at_25%_50%,rgba(57,255,136,0.14),transparent_65%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(700px_300px_at_25%_50%,rgba(180,248,50,0.14),transparent_65%)]" />
 
       <div className="relative mx-auto flex max-w-7xl flex-col items-start gap-8 px-5 py-28 sm:px-8 sm:py-36">
         <Reveal>
@@ -33,7 +33,7 @@ export default function CtaBand() {
         <Reveal delay={0.06}>
           <h2 className="max-w-3xl font-display text-4xl font-bold leading-[1.04] tracking-tight text-paper sm:text-6xl">
             Your story deserves
-            <span className="block text-gradient-neon text-glow">a proper film crew.</span>
+            <span className="block text-gradient-brand text-glow">a proper film crew.</span>
           </h2>
         </Reveal>
         <Reveal delay={0.14}>

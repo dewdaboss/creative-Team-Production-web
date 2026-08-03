@@ -36,9 +36,21 @@ export async function POST(req: Request) {
   }
 
   const dir = path.join(process.cwd(), "public", "uploads");
-  await fs.mkdir(dir, { recursive: true });
   const name = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
-  await fs.writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));
+  try {
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));
+  } catch (e) {
+    console.error("upload write failed", e);
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Server storage is read-only here (Vercel). Set up free Cloudinary upload (DEPLOY.md step 3) or retry after Upstash/Cloudinary env keys are added.",
+      },
+      { status: 507 }
+    );
+  }
 
   return NextResponse.json({ ok: true, path: `/uploads/${name}` });
 }

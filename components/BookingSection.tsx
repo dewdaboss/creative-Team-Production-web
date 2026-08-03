@@ -73,7 +73,19 @@ const EMPTY_FORM: FormState = {
   company: "",
 };
 
-const TIME_SLOTS = ["Morning · 9 AM – 12 PM", "Afternoon · 12 – 4 PM", "Evening · 4 – 8 PM"];
+const TIME_SLOTS: { period: string; times: string[] }[] = [
+  { period: "Morning", times: ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM"] },
+  { period: "Afternoon", times: ["12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM"] },
+  { period: "Evening", times: ["4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM"] },
+  { period: "Night", times: ["8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"] },
+];
+
+const slotChipCls = (on: boolean) =>
+  `rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition-all duration-200 ${
+    on
+      ? "border-neon bg-neon text-[#03130a] shadow-glow"
+      : "border-line bg-white/[0.02] text-mute hover:border-neon/50 hover:text-paper"
+  }`;
 
 const DRAFT_KEY = "ctp-booking-draft-v1";
 
@@ -100,8 +112,10 @@ export default function BookingSection() {
   const estimate = pkg ? (isPerUnit ? pkg.price * effectiveQty : pkg.price) : 0;
 
   const preferredDate = form.date
-    ? `${new Date(`${form.date}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}${form.slot ? ` · ${form.slot.split("·")[0].trim()}` : ""}`
-    : "";
+    ? `${new Date(`${form.date}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}${form.slot ? ` · ${form.slot}` : ""}`
+    : form.slot
+      ? `Flexible date · ${form.slot}`
+      : "";
 
   /* ---- draft persistence ---- */
   useEffect(() => {
@@ -229,7 +243,7 @@ export default function BookingSection() {
           eyebrow="Book your shoot"
           title={
             <>
-              Transparent pricing. <span className="text-gradient-neon">Zero back-and-forth.</span>
+              Transparent pricing. <span className="text-gradient-brand">Zero back-and-forth.</span>
             </>
           }
           description="Select a service, pick a package, drop your details — the estimate updates live. Confirm on the form or straight through WhatsApp."
@@ -530,16 +544,40 @@ export default function BookingSection() {
                           </label>
                           <input id="bk-date" type="date" min={new Date().toISOString().split("T")[0]} className="input [color-scheme:dark]" {...field("date")} />
                         </div>
-                        <div>
-                          <label className="label" htmlFor="bk-slot">
-                            <Clock size={12} /> Preferred time <span className="text-faint normal-case">(optional)</span>
-                          </label>
-                          <select id="bk-slot" className="input appearance-none bg-raise/60" {...field("slot")}>
-                            <option value="">Any time works</option>
-                            {TIME_SLOTS.map((s) => (
-                              <option key={s} value={s}>{s}</option>
+                        <div className="sm:col-span-2">
+                          <span className="label">
+                            <Clock size={12} /> Shoot time <span className="text-faint normal-case">(optional) — pick the exact hour, IST</span>
+                          </span>
+                          <div className="rounded-xl border border-line bg-raise/60 p-3">
+                            <div className="flex flex-wrap gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setForm((f) => ({ ...f, slot: "" }))}
+                                className={slotChipCls(form.slot === "")}
+                              >
+                                Flexible · Any time
+                              </button>
+                            </div>
+                            {TIME_SLOTS.map((g) => (
+                              <div key={g.period} className="mt-2.5">
+                                <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-faint">
+                                  {g.period}
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {g.times.map((t) => (
+                                    <button
+                                      key={t}
+                                      type="button"
+                                      onClick={() => setForm((f) => ({ ...f, slot: t }))}
+                                      className={slotChipCls(form.slot === t)}
+                                    >
+                                      {t}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
                             ))}
-                          </select>
+                          </div>
                         </div>
                         <div>
                           <label className="label" htmlFor="bk-ref">
@@ -636,9 +674,9 @@ export default function BookingSection() {
 
               <div className="mt-4 font-display text-4xl font-bold tracking-tight text-paper">
                 {isInquiry || !pkg ? (
-                  <span className="text-gradient-neon text-3xl">{isInquiry ? "Custom quote" : "—"}</span>
+                  <span className="text-gradient-brand text-3xl">{isInquiry ? "Custom quote" : "—"}</span>
                 ) : (
-                  <span className="text-gradient-neon">{formatINR(estimate)}</span>
+                  <span className="text-gradient-brand">{formatINR(estimate)}</span>
                 )}
               </div>
               {pkg && !isInquiry && service && (
@@ -718,7 +756,7 @@ function SuccessState({ message, onReset, whatsappHref }: { message: string; onR
         <BadgeCheck size={38} className="text-neon" />
       </motion.div>
       <h3 className="mt-6 font-display text-2xl font-bold text-paper sm:text-3xl">
-        Booking received. <span className="text-gradient-neon">You&apos;re on the board.</span>
+        Booking received. <span className="text-gradient-brand">You&apos;re on the board.</span>
       </h3>
       <p className="mt-3 max-w-md text-sm leading-relaxed text-mute">{message}</p>
       <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
