@@ -255,22 +255,41 @@ select.input option {
   pointer-events: none;
   background: radial-gradient(ellipse 118% 88% at 50% 38%, transparent 52%, rgba(0, 0, 0, 0.52) 100%);
 }
-.grain-overlay {
-  position: fixed;
-  inset: -40px;
-  z-index: 29;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
-  animation: grainShift 0.9s steps(4) infinite;
+
+/* ---------- hero cinematic poster wall ---------- */
+.hero-poster-wall {
+  isolation: isolate;
 }
-@keyframes grainShift {
-  0% { background-position: 0 0; }
-  25% { background-position: -34px 22px; }
-  50% { background-position: 28px -30px; }
-  75% { background-position: -22px -18px; }
-  100% { background-position: 0 0; }
+.hero-poster-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 4px;
+  padding: 4px;
+  transform: perspective(1200px) rotateY(-4deg) rotateX(2deg) scale(1.12);
+  transform-origin: 40% 50%;
+  opacity: 0.6;
+}
+.hero-poster-cell {
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .hero-poster-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    transform: perspective(800px) rotateY(-2deg) rotateX(1deg) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-poster-grid {
+    transform: none;
+  }
 }
 
 /* reduced motion */

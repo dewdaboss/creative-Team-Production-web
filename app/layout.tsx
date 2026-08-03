@@ -47,7 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-void font-body text-paper antialiased">
         <div className="vignette-overlay" aria-hidden="true" />
         {children}
-        <div className="grain-overlay" aria-hidden="true" />
       </body>
     </html>
   );
