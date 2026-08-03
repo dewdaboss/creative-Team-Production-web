@@ -1,15 +1,16 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Play, ChevronDown, Clapperboard, Star, FolderCheck } from "lucide-react";
-import Logo from "./Logo";
+import { ArrowRight, Play, ChevronDown, Clapperboard, FolderCheck } from "lucide-react";
+import { InstagramIcon } from "./BrandIcons";
+import CameraHero from "./three/CameraHero";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const floatChips = [
-  { icon: Clapperboard, label: "900+ Reels Delivered", pos: "-left-6 top-16 lg:-left-14", delay: 0 },
-  { icon: Star, label: "4.9 Rated by Clients", pos: "-right-4 top-36 lg:-right-12", delay: 1.2 },
-  { icon: FolderCheck, label: "320+ Projects Done", pos: "-left-4 bottom-16 lg:-left-10", delay: 2.1 },
+  { icon: Clapperboard, label: "60+ Reels Cut", pos: "-left-6 top-16 lg:-left-14", delay: 0 },
+  { icon: InstagramIcon, label: "90+ IG Family", pos: "-right-4 top-36 lg:-right-12", delay: 1.2 },
+  { icon: FolderCheck, label: "40+ Projects", pos: "-left-4 bottom-16 lg:-left-10", delay: 2.1 },
 ];
 
 export default function Hero() {
@@ -77,9 +78,9 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-left lg:justify-start"
           >
             {[
-              ["320+", "projects delivered"],
-              ["12.8K+", "IG community"],
-              ["48h", "avg. delivery"],
+              ["40+", "projects delivered"],
+              ["90+", "IG family"],
+              ["60+", "reels cut"],
             ].map(([num, label]) => (
               <div key={label} className="flex items-baseline gap-2">
                 <span className="font-display text-2xl font-bold text-neon text-glow">{num}</span>
@@ -89,7 +90,7 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* -------- emblem -------- */}
+        {/* -------- 3D camera stage -------- */}
         <div className="relative z-10 mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
           <motion.div
             initial={{ opacity: 0, scale: 0.86 }}
@@ -97,17 +98,7 @@ export default function Hero() {
             transition={{ duration: 1.2, delay: 0.25, ease: EASE }}
             className="relative"
           >
-            <div className="absolute inset-0 -m-10 rounded-full bg-neon/10 blur-3xl animate-pulse-glow" />
-            <motion.div
-              animate={reduce ? undefined : { y: [0, -14, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Logo
-                size={280}
-                withRingText
-                className="[&>svg]:h-[min(70vw,320px)] [&>svg]:w-[min(70vw,320px)]"
-              />
-            </motion.div>
+            <CameraHero className="h-[min(76vw,440px)] w-[min(76vw,440px)]" />
 
             {floatChips.map((chip, i) => (
               <motion.div
