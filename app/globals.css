@@ -273,6 +273,27 @@ select.input option {
   100% { background-position: 0 0; }
 }
 
+/* ---------- smooth mode (phone performance) ---------- */
+.grain-overlay {
+  animation: none !important;
+}
+
+.hero-arc {
+  animation: none !important;
+}
+
+.animate-kenburns {
+  animation-duration: 26s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay,
+  .hero-arc,
+  .animate-kenburns {
+    animation: none !important;
+  }
+}
+
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
