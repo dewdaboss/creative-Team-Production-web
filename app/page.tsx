@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
+import PosterStrip from "@/components/PosterStrip";
 import Services from "@/components/Services";
 import About from "@/components/About";
 import Process from "@/components/Process";
@@ -11,7 +12,7 @@ import Gallery from "@/components/Gallery";
 import Stats from "@/components/Stats";
 import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
-import CinemaBackground from "@/components/three/CinemaBackground";
+import Backdrop from "@/components/Backdrop";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { getGallery, getReviews } from "@/lib/store";
 
@@ -27,10 +28,11 @@ export default async function HomePage() {
 
   return (
     <main className="relative">
-      <CinemaBackground />
+      <Backdrop />
       <Navbar />
       <Hero />
       <Marquee />
+      <PosterStrip />
       <Services />
       <About />
       <BookingSection />

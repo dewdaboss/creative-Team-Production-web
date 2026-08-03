@@ -7,6 +7,7 @@ import { Camera, Clapperboard, Play, X, ExternalLink, Eye, Clock3 } from "lucide
 import { InstagramIcon } from "./BrandIcons";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
+import { site } from "@/lib/site";
 import type { GalleryItem } from "@/lib/types";
 
 type Filter = "all" | "photo" | "reel";
@@ -46,7 +47,7 @@ export default function Gallery({ items }: { items: GalleryItem[] }) {
           eyebrow="Portfolio"
           title={
             <>
-              Work that <span className="text-gradient-neon">stops the scroll.</span>
+              Work that <span className="text-gradient-brand">stops the scroll.</span>
             </>
           }
           description="A living gallery — new shoots, reels and campaigns are published straight from our studio dashboard."
@@ -145,6 +146,24 @@ export default function Gallery({ items }: { items: GalleryItem[] }) {
             })}
           </AnimatePresence>
         </motion.div>
+
+        {/* view-more CTA → live Instagram portfolio */}
+        <Reveal className="mt-14 flex flex-col items-center gap-3 text-center">
+          <a
+            href={site.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-neon"
+          >
+            <InstagramIcon size={17} />
+            View Full Portfolio on Instagram
+            <ExternalLink size={15} />
+          </a>
+          <p className="max-w-md text-xs leading-relaxed text-faint">
+            Fresh reels, shoots &amp; campaigns — the latest drops always land on our Instagram
+            first. Follow <span className="text-neon-soft">@creative_team_production_</span> to stay ahead.
+          </p>
+        </Reveal>
       </div>
 
       {/* ---------------- lightbox ---------------- */}

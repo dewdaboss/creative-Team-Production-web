@@ -17,7 +17,8 @@ export default function Footer() {
   const mapsSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.mapsQuery)}&output=embed&z=13`;
 
   return (
-    <footer id="contact" className="relative border-t border-line bg-gradient-to-b from-transparent to-[#04100a]">
+    <footer id="contact" className="relative overflow-hidden border-t border-line bg-gradient-to-b from-transparent to-[#04100a]">
+      <div aria-hidden className="arc-lines pointer-events-none absolute bottom-0 left-0 h-72 w-[32rem]" />
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
         <div className="grid gap-12 lg:grid-cols-[1.3fr_0.8fr_0.9fr_1.2fr]">
           {/* brand */}

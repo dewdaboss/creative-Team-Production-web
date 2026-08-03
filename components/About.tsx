@@ -44,7 +44,7 @@ export default function About() {
           title={
             <>
               We don&apos;t just create content.
-              <span className="block text-gradient-neon">We build brands.</span>
+              <span className="block text-gradient-brand">We build brands.</span>
             </>
           }
         />
