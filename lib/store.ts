@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import os from "os";
 import type { GalleryItem, Review, SiteStats, VisitorStats } from "./types";
 import { seedGallery, seedReviews, seedStats } from "./seed";
 import { kvEnabled, kvGet, kvSet } from "./kv";
@@ -11,7 +12,9 @@ import { kvEnabled, kvGet, kvSet } from "./kv";
  * Same async interface either way — callers don't care which backend is live.
  */
 
-const DATA_DIR = path.join(process.cwd(), "data");
+const DATA_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), "ctp-data")
+  : path.join(process.cwd(), "data");
 
 async function ensureDir() {
   await fs.mkdir(DATA_DIR, { recursive: true });
