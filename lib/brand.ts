@@ -58,42 +58,20 @@ export const INDUSTRIES = [
   { name: "Corporate Companies", icon: "Briefcase" },
 ] as const;
 
-export const CAPABILITIES: { group: string; icon: string; items: string[] }[] = [
+export const CAPABILITIES: { group: string; icon: string; blurb: string }[] = [
   {
     group: "Shoots & Production",
     icon: "Clapperboard",
-    items: [
-      "Cinematic Reel Shoots",
-      "Professional Photography",
-      "Product Photography",
-      "Product Videography",
-      "Commercial Ad Shoots",
-      "Gym · Café · Restaurant Shoots",
-      "Bike & Car Shoots",
-      "Podcast Shoot & Editing",
-      "YouTube Video Production",
-      "Event Coverage (Birthday / Anniversary / Corporate)",
-    ],
+    blurb: "Cinematic reels, photography, product shoots and full-scale productions.",
   },
   {
     group: "Edit & Design",
     icon: "PenTool",
-    items: [
-      "Video & Reel Editing",
-      "Poster Design",
-      "Social Media Post Design",
-      "Brand Identity & Branding",
-    ],
+    blurb: "Video & reel editing, poster and brand design that makes content pop.",
   },
   {
     group: "Growth & Marketing",
     icon: "Rocket",
-    items: [
-      "Social Media Management",
-      "Marketing Strategy",
-      "Content Planning",
-      "Content Calendar Creation",
-      "Website Design & Development",
-    ],
+    blurb: "Social media management, strategy and calendars that turn views into customers.",
   },
 ];

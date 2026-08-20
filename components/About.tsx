@@ -142,32 +142,23 @@ export default function About() {
           })}
         </div>
 
-        {/* full capabilities */}
+        {/* services overview — 3 category cards, no repeated bullet lists */}
         <Reveal className="mt-20">
           <p className="text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-faint">
-            Everything under one roof
+            Services overview
           </p>
         </Reveal>
         <div className="mt-7 grid gap-5 md:grid-cols-3">
           {CAPABILITIES.map((cap, ci) => {
             const Icon = CAPABILITY_ICONS[cap.icon] ?? Clapperboard;
             return (
-              <Reveal key={cap.group} delay={ci * 0.08}>
-                <div className="glass h-full rounded-3xl p-6">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-neon/25 bg-neon/10 text-neon">
-                      <Icon size={16} />
-                    </span>
-                    <p className="font-display text-sm font-bold uppercase tracking-[0.14em] text-paper">{cap.group}</p>
-                  </div>
-                  <ul className="mt-5 space-y-2.5">
-                    {cap.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-[13px] leading-snug text-mute">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-neon shadow-glow" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+              <Reveal key={cap.group} delay={ci * 0.08} className="h-full">
+                <div className="glass group h-full rounded-3xl p-6 transition-colors hover:border-neon/40">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-neon/25 bg-neon/10 text-neon transition-transform duration-300 group-hover:scale-110">
+                    <Icon size={18} />
+                  </span>
+                  <p className="mt-4 font-display text-base font-bold text-paper">{cap.group}</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-mute">{cap.blurb}</p>
                 </div>
               </Reveal>
             );

@@ -79,6 +79,13 @@ body {
 
 /* ---------- utility layers ---------- */
 @layer utilities {
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
   .glass {
     @apply border border-line bg-panel/70 backdrop-blur-xl;
   }

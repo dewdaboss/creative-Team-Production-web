@@ -20,7 +20,7 @@ export default function Footer() {
     <footer id="contact" className="relative overflow-hidden border-t border-line bg-gradient-to-b from-transparent to-[#04100a]">
       <div aria-hidden className="arc-lines pointer-events-none absolute bottom-0 left-0 h-72 w-[32rem]" />
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.3fr_0.8fr_0.9fr_1.2fr]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.25fr_0.75fr_0.9fr_1.1fr] lg:gap-12">
           {/* brand */}
           <div>
             <div className="flex items-center gap-3.5">
@@ -83,9 +83,16 @@ export default function Footer() {
             <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-paper">Services</p>
             <ul className="mt-5 space-y-3">
               {SERVICES.map((s) => (
-                <li key={s.id} className="text-sm text-mute">
-                  {s.short}
-                  <span className="ml-2 text-xs text-faint">{s.startingAt ?? "Quote"}</span>
+                <li key={s.id}>
+                  <a
+                    href="#booking"
+                    className="group inline-flex items-center gap-1.5 text-sm text-mute transition-colors hover:text-neon"
+                  >
+                    {s.short}
+                    <span className="text-xs text-faint transition-colors group-hover:text-neon-soft">
+                      {s.startingAt ?? "Quote"}
+                    </span>
+                  </a>
                 </li>
               ))}
             </ul>
