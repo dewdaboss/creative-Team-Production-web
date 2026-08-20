@@ -499,12 +499,11 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
 
           <div>
             <label className="label">Category</label>
-            <input className="input" list="admin-cats" value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} />
-            <datalist id="admin-cats">
+            <select className="input" value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}>
               {CATEGORIES.map((c) => (
-                <option key={c} value={c} />
+                <option key={c} value={c}>{c}</option>
               ))}
-            </datalist>
+            </select>
           </div>
 
           <div>

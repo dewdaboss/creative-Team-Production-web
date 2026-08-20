@@ -305,3 +305,11 @@ select.input option {
     scroll-behavior: auto !important;
   }
 }
+
+/* SMOOTH MODE (phone performance) */
+.grain-overlay { animation: none !important; }
+.hero-arc { animation: none !important; }
+.animate-kenburns { animation-duration: 26s !important; }
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay, .hero-arc, .animate-kenburns { animation: none !important; }
+}
