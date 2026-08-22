@@ -9,7 +9,6 @@ import WhyUs from "@/components/WhyUs";
 import BookingSection from "@/components/BookingSection";
 import CtaBand from "@/components/CtaBand";
 import Gallery from "@/components/Gallery";
-import Stats from "@/components/Stats";
 import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
 import Backdrop from "@/components/Backdrop";
@@ -37,7 +36,6 @@ export default async function HomePage() {
       <About />
       <BookingSection />
       <CtaBand />
-      <Stats />
       <Process />
       <WhyUs />
       <Gallery items={visibleGallery} />
