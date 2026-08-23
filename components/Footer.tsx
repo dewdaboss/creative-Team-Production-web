@@ -1,152 +1,153 @@
-import Link from "next/link";
-import { Phone, Mail, MapPin, ArrowUpRight, Aperture, LockKeyhole } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import { FacebookIcon, InstagramIcon, WhatsAppIcon, YoutubeIcon } from "./BrandIcons";
 import Logo from "./Logo";
 import { site } from "@/lib/site";
 import { SERVICES } from "@/lib/pricing";
 
+function GoogleIcon({ size = 18 }: { size?: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{ width: size, height: size }}
+      className="inline-flex items-center justify-center font-display text-sm font-black leading-none"
+    >
+      G
+    </span>
+  );
+}
+
 const SOCIALS = [
   { icon: InstagramIcon, label: "Instagram", href: site.instagram },
-  { icon: YoutubeIcon, label: "YouTube", href: site.youtube },
   { icon: FacebookIcon, label: "Facebook", href: site.facebook },
-  { icon: WhatsAppIcon, label: "WhatsApp", href: `https://wa.me/${site.whatsapp}` },
+  { icon: YoutubeIcon, label: "YouTube", href: site.youtube },
+  { icon: GoogleIcon, label: "Google Reviews", href: site.googleReview },
 ];
+
+const EXPLORE_LINKS = [
+  ["Home", "#top"],
+  ["Services", "#services"],
+  ["Gallery", "#portfolio"],
+  ["Book", "#booking"],
+] as const;
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const mapsSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.mapsQuery)}&output=embed&z=13`;
+  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapsQuery)}`;
 
   return (
-    <footer id="contact" className="relative overflow-hidden border-t border-line bg-gradient-to-b from-transparent to-[#04100a]">
-      <div aria-hidden className="arc-lines pointer-events-none absolute bottom-0 left-0 h-72 w-[32rem]" />
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.25fr_0.75fr_0.9fr_1.1fr] lg:gap-12">
-          {/* brand */}
+    <footer id="contact" className="relative scroll-mt-16 border-t border-neon/20 bg-panel/45">
+      <div className="mx-auto max-w-7xl px-5 pb-7 pt-14 sm:px-8 sm:pt-16">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.2fr_0.7fr_0.9fr_1.2fr] lg:gap-8 xl:gap-12">
           <div>
-            <div className="flex items-center gap-3.5">
-              <Logo size={52} />
+            <div className="flex items-center gap-3">
+              <Logo size={48} />
               <div>
-                <p className="font-display text-lg font-bold tracking-[0.12em] text-paper">CREATIVE TEAM</p>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-neon">Production</p>
+                <p className="font-display text-base font-bold tracking-[0.1em] text-paper">CREATIVE TEAM</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-neon">Production</p>
               </div>
             </div>
-            <p className="mt-4 text-xs font-bold uppercase tracking-[0.26em] text-neon">
-              {site.tagline}
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-mute">
+              Cinematic content and smart creative strategy for brands ready to grow.
             </p>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-mute">
-              Premium creative agency in Indore — cinematic content, photography, branding and
-              digital marketing. We don&apos;t just create content, we help businesses build their brand.
-            </p>
-            <div className="mt-6 flex gap-3">
-              {SOCIALS.map((s) => (
+            <div className="mt-5 flex gap-2.5">
+              {SOCIALS.map((social) => (
                 <a
-                  key={s.label}
-                  href={s.href}
+                  key={social.label}
+                  href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="group flex h-11 w-11 items-center justify-center rounded-full border border-line bg-panel/60 text-mute transition-all duration-300 hover:-translate-y-1 hover:border-neon hover:text-neon hover:shadow-glow"
+                  aria-label={social.label}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-neon/20 bg-neon/5 text-mute transition-[border-color,color,transform] duration-300 hover:-translate-y-0.5 hover:border-neon/50 hover:text-neon"
                 >
-                  <s.icon size={18} />
+                  <social.icon size={17} />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* explore */}
-          <div>
-            <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-paper">Explore</p>
+          <nav aria-label="Footer navigation">
+            <h2 className="font-display text-xs font-bold uppercase tracking-[0.2em] text-paper">Explore</h2>
             <ul className="mt-5 space-y-3">
-              {[
-                ["Services", "#services"],
-                ["Pricing & Booking", "#booking"],
-                ["Portfolio", "#portfolio"],
-                ["Reviews", "#reviews"],
-                ["Book via WhatsApp", `https://wa.me/${site.whatsapp}`],
-              ].map(([label, href]) => (
+              {EXPLORE_LINKS.map(([label, href]) => (
                 <li key={label}>
                   <a
                     href={href}
-                    {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="group inline-flex items-center gap-1.5 text-sm text-mute transition-colors hover:text-neon"
                   >
                     {label}
-                    <ArrowUpRight size={13} className="opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
+                    <ArrowUpRight
+                      size={12}
+                      className="opacity-0 transition-[opacity,transform] group-hover:translate-x-0.5 group-hover:opacity-100"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div>
+            <h2 className="font-display text-xs font-bold uppercase tracking-[0.2em] text-paper">Services</h2>
+            <ul className="mt-5 space-y-2.5">
+              {SERVICES.map((service) => (
+                <li key={service.id}>
+                  <a href="#booking" className="text-[13px] text-mute transition-colors hover:text-neon">
+                    {service.short}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* services */}
           <div>
-            <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-paper">Services</p>
-            <ul className="mt-5 space-y-3">
-              {SERVICES.map((s) => (
-                <li key={s.id}>
-                  <a
-                    href="#booking"
-                    className="group inline-flex items-center gap-1.5 text-sm text-mute transition-colors hover:text-neon"
-                  >
-                    {s.short}
-                    <span className="text-xs text-faint transition-colors group-hover:text-neon-soft">
-                      {s.startingAt ?? "Quote"}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* contact + map */}
-          <div>
-            <p className="font-display text-sm font-bold uppercase tracking-[0.22em] text-paper">Reach the studio</p>
+            <h2 className="font-display text-xs font-bold uppercase tracking-[0.2em] text-paper">Contact</h2>
             <ul className="mt-5 space-y-3.5 text-sm">
               <li>
-                <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="flex items-center gap-3 text-mute transition-colors hover:text-neon">
-                  <Phone size={16} className="shrink-0 text-neon" /> {site.phone}
+                <a
+                  href={`mailto:${site.email}`}
+                  className="flex items-start gap-3 break-all text-mute transition-colors hover:text-neon"
+                >
+                  <Mail size={16} className="mt-0.5 shrink-0 text-neon" />
+                  {site.email}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${site.email}`} className="flex items-center gap-3 text-mute transition-colors hover:text-neon">
-                  <Mail size={16} className="shrink-0 text-neon" /> {site.email}
+                <a
+                  href={`tel:${site.phone.replace(/\s/g, "")}`}
+                  className="flex items-center gap-3 text-mute transition-colors hover:text-neon"
+                >
+                  <Phone size={16} className="shrink-0 text-neon" />
+                  {site.phone}
                 </a>
               </li>
-              <li className="flex items-start gap-3 text-mute">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-neon" />
-                <span>{site.address}</span>
+              <li>
+                <a
+                  href={`https://wa.me/${site.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-mute transition-colors hover:text-neon"
+                >
+                  <WhatsAppIcon size={16} className="shrink-0 text-neon" />
+                  WhatsApp
+                </a>
+              </li>
+              <li>
+                <a
+                  href={mapHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 text-mute transition-colors hover:text-neon"
+                >
+                  <MapPin size={16} className="mt-0.5 shrink-0 text-neon" />
+                  Bengali Square, Indore
+                </a>
               </li>
             </ul>
-            <div className="mt-5 overflow-hidden rounded-2xl border border-line">
-              <iframe
-                src={mapsSrc}
-                title="Studio location map"
-                className="map-dark h-44 w-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
           </div>
         </div>
 
-        {/* bottom bar */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-5 border-t border-line pt-7 sm:flex-row">
-          <p className="flex items-center gap-2 text-xs text-faint">
-            © {year} {site.name}. Crafted with
-            <Aperture size={13} className="animate-spin-slower text-neon" />
-            in the darkroom.
-          </p>
-          <div className="flex items-center gap-6">
-            <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold uppercase tracking-[0.16em] text-mute transition-colors hover:text-neon">
-              WhatsApp us
-            </a>
-            <Link
-              href="/admin"
-              className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-faint transition-colors hover:text-neon"
-            >
-              <LockKeyhole size={12} /> Owner login
-            </Link>
-          </div>
+        <div className="mt-12 flex flex-col gap-2 border-t border-neon/20 pt-6 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
+          <p>© {year} {site.name}</p>
+          <p className="font-semibold uppercase tracking-[0.2em] text-neon">Create • Shoot • Grow</p>
         </div>
       </div>
     </footer>

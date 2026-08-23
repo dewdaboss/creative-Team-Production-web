@@ -3,22 +3,20 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  Camera,
-  Clapperboard,
-  TrendingUp,
-  Package,
-  PartyPopper,
-  Film,
-  Scissors,
   ArrowUpRight,
+  Camera,
   Check,
   ChevronDown,
+  Clapperboard,
+  Film,
+  Package,
+  PartyPopper,
+  Scissors,
+  TrendingUp,
 } from "lucide-react";
 import SectionHeading from "./SectionHeading";
-import Reveal from "./Reveal";
-import { SERVICES, formatINR } from "@/lib/pricing";
+import { SERVICES } from "@/lib/pricing";
 import { selectService } from "@/lib/client-events";
-import type { PackageOption } from "@/lib/types";
 
 const ICONS: Record<string, typeof Camera> = {
   Camera,
@@ -30,27 +28,22 @@ const ICONS: Record<string, typeof Camera> = {
   Scissors,
 };
 
-function packagePrice(p: PackageOption): string {
-  if (p.unit === "inquiry") return "Custom quote";
-  const base = formatINR(p.price);
-  switch (p.unit) {
-    case "photo":
-      return `${base} / photo`;
-    case "hour":
-      return `${base} / hour`;
-    case "month":
-      return `${base} / month`;
-    default:
-      return base;
-  }
-}
+const SERVICE_COPY: Record<string, string> = {
+  photography: "Portraits, lifestyle and location-ready frames.",
+  reels: "Scripted, shot and edited reels built to stop scrolls.",
+  videoedit: "Sharp cuts, captions, colour and sound for raw footage.",
+  monthly: "A monthly content engine designed to turn views into leads.",
+  product: "E-commerce and campaign visuals made to sell.",
+  events: "Candid photo and reel coverage for every celebration.",
+  longform: "Brand films, documentaries and full-scale productions.",
+};
 
 export default function Services() {
-  const reduce = useReducedMotion();
   const [openId, setOpenId] = useState<string | null>(null);
+  const reduce = useReducedMotion();
 
   return (
-    <section id="services" className="relative py-24 sm:py-32">
+    <section id="services" className="relative scroll-mt-16 py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           eyebrow="What we do"
@@ -59,40 +52,41 @@ export default function Services() {
               One crew. <span className="text-gradient-neon">Every frame.</span>
             </>
           }
-          description="Pick a service to see live package pricing — the booking wizard below updates instantly."
+          description="Seven focused services, clear starting prices and one team from brief to delivery."
         />
 
-        {/* ===== mobile: collapsible accordion with live rates ===== */}
-        <div className="space-y-3 sm:hidden">
+        {/* Mobile and tablet: compact single-open accordion. */}
+        <div className="space-y-3 lg:hidden">
           {SERVICES.map((service) => {
-            const Icon = ICONS[service.icon] ?? Camera;
             const open = openId === service.id;
+            const featured = service.packages.find((item) => item.badge) ?? service.packages[0];
+            const panelId = `service-panel-${service.id}`;
+
             return (
-              <div
+              <motion.div
+                layout={reduce ? false : "position"}
                 key={service.id}
-                className={`overflow-hidden rounded-2xl border bg-panel/60 backdrop-blur transition-colors duration-300 ${
-                  open ? "border-neon/50" : "border-line"
+                className={`overflow-hidden rounded-2xl border bg-panel/70 backdrop-blur-xl transition-colors duration-300 ${
+                  open ? "border-neon/40" : "border-neon/20"
                 }`}
               >
                 <button
-                  onClick={() => setOpenId(open ? null : service.id)}
+                  type="button"
                   aria-expanded={open}
-                  className="flex w-full items-center gap-3.5 p-4 text-left"
+                  aria-controls={panelId}
+                  onClick={() => setOpenId(open ? null : service.id)}
+                  className="flex w-full items-center gap-3 px-4 py-4 text-left"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-neon/25 bg-neon/10 text-neon">
-                    <Icon size={20} strokeWidth={1.8} />
+                  <span className="min-w-0 flex-1 font-display text-sm font-bold text-paper sm:text-base">
+                    {service.name}
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-display text-[15px] font-bold text-paper">
-                      {service.name}
-                    </span>
-                    <span className="mt-0.5 block text-xs font-semibold tracking-wide text-neon-soft">
-                      {service.startingAt ?? "Custom quote"}
-                    </span>
+                  <span className="shrink-0 text-xs font-bold text-neon sm:text-sm">
+                    {service.startingAt ?? "Custom quote"}
                   </span>
                   <ChevronDown
-                    size={18}
-                    className={`shrink-0 text-faint transition-transform duration-300 ${
+                    aria-hidden="true"
+                    size={17}
+                    className={`shrink-0 text-mute transition-transform duration-300 ${
                       open ? "rotate-180 text-neon" : ""
                     }`}
                   />
@@ -101,101 +95,71 @@ export default function Services() {
                 <AnimatePresence initial={false}>
                   {open && (
                     <motion.div
-                      initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-                      animate={reduce ? { opacity: 1 } : { height: "auto", opacity: 1 }}
-                      exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      id={panelId}
+                      initial={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6 }}
+                      transition={{ duration: reduce ? 0 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+                      className="border-t border-neon/15 px-4 pb-4 pt-3"
                     >
-                      <div className="border-t border-line px-4 pb-4 pt-3">
-                        <p className="text-xs leading-relaxed text-mute">{service.tagline}</p>
-                        <ul className="mt-3 divide-y divide-line">
-                          {service.packages.map((p) => (
-                            <li key={p.id} className="flex items-center justify-between gap-3 py-2.5">
-                              <span className="min-w-0">
-                                <span className="flex items-center gap-1.5 text-[13px] font-semibold text-paper">
-                                  {p.name}
-                                  {p.badge && (
-                                    <span className="rounded-full bg-neon/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-neon">
-                                      {p.badge}
-                                    </span>
-                                  )}
-                                </span>
-                                <span className="mt-0.5 block text-[11px] leading-snug text-faint">
-                                  {p.description}
-                                </span>
-                              </span>
-                              <span className="shrink-0 font-display text-sm font-bold text-neon">
-                                {packagePrice(p)}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                        <button
-                          onClick={() => selectService(service.id)}
-                          className="btn-neon mt-3 w-full !py-3 text-xs"
-                        >
-                          Choose {service.short}
-                          <ArrowUpRight size={14} />
-                        </button>
-                      </div>
+                      <p className="text-sm leading-relaxed text-mute">
+                        {SERVICE_COPY[service.id] ?? service.tagline}
+                      </p>
+                      <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                        {(featured?.features ?? []).slice(0, 3).map((highlight) => (
+                          <li key={highlight} className="flex items-start gap-2 text-xs leading-relaxed text-faint">
+                            <Check size={13} className="mt-0.5 shrink-0 text-neon" />
+                            {highlight}
+                          </li>
+                        ))}
+                      </ul>
+                      <a
+                        href="#booking"
+                        onClick={() => selectService(service.id)}
+                        className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.16em] text-neon transition-opacity hover:opacity-75"
+                      >
+                        View packages <ArrowUpRight size={14} />
+                      </a>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
-        {/* ===== desktop: 2 → 3 column grid ===== */}
-        <div className="hidden gap-5 sm:grid sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((service, i) => {
+        {/* Desktop: deliberately compact three-column service grid. */}
+        <div className="hidden grid-cols-3 gap-4 lg:grid">
+          {SERVICES.map((service, index) => {
             const Icon = ICONS[service.icon] ?? Camera;
-            const hero = service.packages.find((p) => p.badge) ?? service.packages[0];
+
             return (
-              <Reveal key={service.id} delay={i * 0.07} className="h-full">
-                <motion.button
-                  onClick={() => selectService(service.id)}
-                  whileHover={reduce ? undefined : { y: -8 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                  className="group relative flex h-full w-full flex-col overflow-hidden rounded-3xl border border-line bg-panel/60 p-7 text-left backdrop-blur transition-colors duration-300 hover:border-neon/50 hover:bg-raise/70"
-                >
-                  {/* hover glow */}
-                  <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-neon/0 blur-3xl transition-all duration-500 group-hover:bg-neon/15" />
-
-                  <div className="flex items-start justify-between">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-neon/25 bg-neon/10 text-neon shadow-glow">
-                      <Icon size={22} strokeWidth={1.8} />
-                    </span>
-                    <ArrowUpRight
-                      size={20}
-                      className="text-faint transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-neon"
-                    />
-                  </div>
-
-                  <h3 className="mt-6 font-display text-xl font-bold text-paper sm:text-2xl">
-                    {service.name}
-                  </h3>
-                  <p className="mt-2.5 flex-1 text-sm leading-relaxed text-mute">{service.tagline}</p>
-
-                  <ul className="mt-5 space-y-1.5">
-                    {(hero?.features ?? []).slice(0, 2).map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-xs text-faint">
-                        <Check size={13} className="text-neon" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
-                    <span className="font-display text-sm font-bold tracking-wide text-neon">
-                      {service.startingAt ?? "Custom quote"}
-                    </span>
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-faint transition-colors group-hover:text-neon-soft">
-                      View packages →
-                    </span>
-                  </div>
-                </motion.button>
-              </Reveal>
+              <article
+                key={service.id}
+                className={`group flex min-h-52 flex-col rounded-2xl border border-neon/20 bg-panel/70 p-5 backdrop-blur-xl transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-neon/45 ${
+                  index === SERVICES.length - 1 ? "lg:col-start-2" : ""
+                }`}
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-neon/25 bg-neon/10 text-neon">
+                  <Icon size={19} strokeWidth={1.8} />
+                </span>
+                <h3 className="mt-4 font-display text-lg font-bold text-paper">{service.name}</h3>
+                <p className="mt-1.5 truncate text-sm text-mute">
+                  {SERVICE_COPY[service.id] ?? service.tagline}
+                </p>
+                <div className="mt-auto flex items-end justify-between gap-4 border-t border-neon/15 pt-4">
+                  <span className="font-display text-sm font-bold text-neon">
+                    {service.startingAt ?? "Custom quote"}
+                  </span>
+                  <a
+                    href="#booking"
+                    onClick={() => selectService(service.id)}
+                    className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-neon transition-opacity hover:opacity-75"
+                  >
+                    View packages <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </article>
             );
           })}
         </div>
