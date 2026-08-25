@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { bookingSchema, priceBooking } from "@/lib/booking";
-import { dispatchLead } from "@/lib/notify";
+import { dispatchLead, notifyWhatsApp } from "@/lib/notify";
 import { appendLead } from "@/lib/store";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 
@@ -50,6 +50,7 @@ export async function POST(req: Request) {
     };
 
     const webhook = await dispatchLead(base);
+    await notifyWhatsApp(base);
     await appendLead({ ...base, automation: { local: true, webhook } });
 
     return NextResponse.json({ ok: true, id: base.id, automation: { webhook } });

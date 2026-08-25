@@ -30,4 +30,26 @@ export async function dispatchLead(lead: Record<string, unknown>): Promise<"sent
   }
 }
 
+/** Free WhatsApp alert to owner via CallMeBot (personal-use free API). */
+export async function notifyWhatsApp(lead: Record<string, unknown>): Promise<void> {
+  const key = process.env.WHATSAPP_CALLMEBOT_KEY;
+  const phone = process.env.WHATSAPP_ADMIN;
+  if (!key || !phone) return;
+  const text = [
+    "🎬 *New Booking — Creative Team*",
+    `👤 ${lead.name} • ${lead.phone}`,
+    `📦 ${lead.serviceName} / ${lead.packageName}`,
+    lead.estimate ? `💰 ~₹${lead.estimate}` : "💰 Custom quote",
+    `📍 ${lead.location}`,
+    lead.preferredDate ? `🕒 ${lead.preferredDate}` : "",
+    lead.notes ? `📝 ${lead.notes}` : "",
+  ].filter(Boolean).join("\n");
+  try {
+    await fetch(
+      `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent("+" + String(phone))}&text=${encodeURIComponent(text)}&apikey=${encodeURIComponent(key)}`,
+      { signal: AbortSignal.timeout(10_000) }
+    );
+  } catch { /* alert fail ho to booking ko fail mat karo */ }
+}
+
 
