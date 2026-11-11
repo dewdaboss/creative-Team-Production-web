@@ -28,6 +28,14 @@ const TABLE = "gallery_items";
 
 export const usingSupabase = supabaseEnabled;
 
+/**
+ * Where the last gallery read actually came from.
+ * Lets the admin panel show "Supabase" only when the database really answered —
+ * if Supabase is unreachable the UI correctly reports the JSON fallback.
+ */
+let lastReadSource: "supabase" | "json" = "json";
+export const galleryReadSource = () => lastReadSource;
+
 interface DbRow {
   id: string;
   type: "photo" | "reel";
@@ -96,10 +104,18 @@ export interface GalleryPatch {
 
 export async function listGalleryItems(): Promise<GalleryItem[]> {
   if (supabaseEnabled) {
-    const rows = await selectRows<DbRow>(TABLE, "select=*&order=row_key.asc,sort_order.asc");
-    return rows.map(fromDb);
+    try {
+      const rows = await selectRows<DbRow>(TABLE, "select=*&order=row_key.asc,sort_order.asc");
+      if (rows.length > 0) {
+        lastReadSource = "supabase";
+        return rows.map(fromDb);
+      }
+    } catch (e) {
+      console.error("supabase gallery read failed — using JSON store", e);
+    }
   }
   const items = await getGallery();
+  lastReadSource = "json";
   return items.map((i) => ({
     ...i,
     mediaType: i.mediaType ?? "image",
@@ -177,8 +193,12 @@ export async function createGalleryItem(input: GalleryInput): Promise<GalleryIte
     existing.filter((i) => (i.rowKey ?? DEFAULT_ROW) === rowKey).reduce((m, i) => Math.max(m, i.order), 0) + 1;
 
   if (supabaseEnabled) {
-    const [row] = await insertRow<DbRow>(TABLE, { ...base, sort_order: order });
-    return fromDb(row);
+    try {
+      const [row] = await insertRow<DbRow>(TABLE, { ...base, sort_order: order });
+      return fromDb(row);
+    } catch (e) {
+      console.error("supabase gallery insert failed — using JSON store", e);
+    }
   }
 
   const items = await getGallery();
@@ -229,8 +249,12 @@ export async function updateGalleryItem(id: string, patch: GalleryPatch): Promis
   }
 
   if (supabaseEnabled) {
-    const [row] = await updateRows<DbRow>(TABLE, `id=eq.${encodeURIComponent(id)}`, changes);
-    return row ? fromDb(row) : null;
+    try {
+      const [row] = await updateRows<DbRow>(TABLE, `id=eq.${encodeURIComponent(id)}`, changes);
+      if (row) return fromDb(row);
+    } catch (e) {
+      console.error("supabase gallery update failed — using JSON store", e);
+    }
   }
 
   const items = await getGallery();
@@ -257,15 +281,20 @@ export async function updateGalleryItem(id: string, patch: GalleryPatch): Promis
 
 export async function deleteGalleryItem(id: string): Promise<boolean> {
   if (supabaseEnabled) {
-    const [existing] = await selectRows<DbRow>(TABLE, `select=*&id=eq.${encodeURIComponent(id)}`);
-    if (!existing) return false;
-    await deleteRows(TABLE, `id=eq.${encodeURIComponent(id)}`);
-    const path = objectPathFromUrl(existing.src);
-    if (path) {
-      // Best effort — a missing object must not fail the delete.
-      await removeObjects([path]).catch(() => undefined);
+    try {
+      const [existing] = await selectRows<DbRow>(TABLE, `select=*&id=eq.${encodeURIComponent(id)}`);
+      if (existing) {
+        await deleteRows(TABLE, `id=eq.${encodeURIComponent(id)}`);
+        const path = objectPathFromUrl(existing.src);
+        if (path) {
+          // Best effort — a missing object must not fail the delete.
+          await removeObjects([path]).catch(() => undefined);
+        }
+        return true;
+      }
+    } catch (e) {
+      console.error("supabase gallery delete failed — using JSON store", e);
     }
-    return true;
   }
 
   const items = await getGallery();

@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 import {
   createGalleryItem,
   deleteGalleryItem,
+  galleryReadSource,
   listGalleryItems,
   moveGalleryItem,
   updateGalleryItem,
@@ -62,7 +63,11 @@ export async function GET() {
     (a, b) =>
       (order[a.rowKey ?? "gallery"] ?? 9) - (order[b.rowKey ?? "gallery"] ?? 9) || a.order - b.order
   );
-  return NextResponse.json({ items: sorted, rows: ROW_KEYS, backend: usingSupabase ? "supabase" : "json" });
+  return NextResponse.json({
+    items: sorted,
+    rows: ROW_KEYS,
+    backend: usingSupabase ? galleryReadSource() : "json",
+  });
 }
 
 export async function POST(req: Request) {
