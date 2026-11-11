@@ -72,20 +72,50 @@ interface Lead {
  */
 const TOKEN_KEY = "ctp_admin_token";
 
+/**
+ * In-memory copy of the session token. Some embedded previews run the page in
+ * a sandboxed iframe where cookies AND localStorage are blocked — keeping the
+ * token in module memory is the only thing that survives between requests, so
+ * the dashboard stays signed in for the current page view.
+ */
+let memoryToken = "";
+
 function readToken(): string {
+  if (memoryToken) return memoryToken;
   try {
-    return window.localStorage.getItem(TOKEN_KEY) ?? "";
+    const stored = window.localStorage.getItem(TOKEN_KEY);
+    if (stored) {
+      memoryToken = stored;
+      return stored;
+    }
   } catch {
-    return "";
+    /* storage blocked */
   }
+  try {
+    const session = window.sessionStorage.getItem(TOKEN_KEY);
+    if (session) {
+      memoryToken = session;
+      return session;
+    }
+  } catch {
+    /* storage blocked */
+  }
+  return "";
 }
 
 function writeToken(token: string) {
+  memoryToken = token;
   try {
     if (token) window.localStorage.setItem(TOKEN_KEY, token);
     else window.localStorage.removeItem(TOKEN_KEY);
   } catch {
-    /* storage blocked — the cookie still works */
+    /* storage blocked — memory copy still works */
+  }
+  try {
+    if (token) window.sessionStorage.setItem(TOKEN_KEY, token);
+    else window.sessionStorage.removeItem(TOKEN_KEY);
+  } catch {
+    /* storage blocked — memory copy still works */
   }
 }
 
@@ -258,6 +288,15 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
         body: JSON.stringify({ user, pass }),
       });
       if (data.token) writeToken(data.token);
+
+      // Confirm the session really stuck before entering the dashboard —
+      // otherwise the user would bounce back with no explanation.
+      const check = await api<{ authenticated: boolean }>("/api/auth/me");
+      if (!check.authenticated) {
+        throw new Error(
+          "Login worked but the session could not be saved. Allow cookies/site data for this preview (or open it in a normal tab) and try again."
+        );
+      }
       onSuccess();
     } catch (err) {
       setError((err as Error).message);
