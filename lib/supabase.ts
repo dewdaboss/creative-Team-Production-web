@@ -93,6 +93,31 @@ export function updateRows<T>(
   });
 }
 
+/** Bulk insert-or-update on a unique column (used for single-row settings + review sync). */
+export function upsertRows<T>(
+  table: string,
+  rows: Record<string, unknown>[],
+  onConflict: string
+): Promise<T[]> {
+  return request<T[]>(`/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "resolution=merge-duplicates,return=representation",
+    },
+    body: JSON.stringify(rows),
+  });
+}
+
+/** Calls a Postgres function exposed through PostgREST (e.g. atomic counters). */
+export function callRpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
+  return request<T>(`/rest/v1/rpc/${fn}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(args),
+  });
+}
+
 export function deleteRows(table: string, filter: string): Promise<null> {
   return request<null>(`/rest/v1/${table}?${filter}`, { method: "DELETE" });
 }

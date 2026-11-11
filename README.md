@@ -86,12 +86,14 @@ public/images/       generated brand imagery & portfolio seeds
 ## 🔐 Notes for production
 
 - Set `SESSION_SECRET`, `ADMIN_USER`, `ADMIN_PASS` and `NOTIFY_WEBHOOK_URL` in your host's env settings.
-- **Media (photos + videos):** set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (server-only) and
-  optionally `SUPABASE_STORAGE_BUCKET` (default `gallery`). Run [`docs/supabase-setup.sql`](./docs/supabase-setup.sql)
-  once to create the table, policies and public bucket. Admin uploads then go straight to Supabase
-  Storage; without the keys the app falls back to the local JSON store and `public/uploads/`.
-- **Leads & counters on Vercel:** set `KV_REST_API_URL` + `KV_REST_API_TOKEN` (Upstash) — the JSON
-  store switches to Redis automatically. The JSON-file store remains the default for a VPS / Node server.
+- **Everything persistent lives in Supabase:** set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (server-only)
+  and optionally `SUPABASE_STORAGE_BUCKET` (default `gallery`). Run [`docs/supabase-setup.sql`](./docs/supabase-setup.sql)
+  once to create the tables (`gallery_items`, `leads`, `reviews`, `site_stats`, `visitor_counters`),
+  policies, the atomic visitor counter and the public storage bucket.
+  - `gallery_items` + Storage bucket → photos/videos and their row placement
+  - `leads` → every booking enquiry (survives redeploys and cold starts)
+  - `reviews`, `site_stats`, `visitor_counters` → admin edits and counters
+  - Without the Supabase keys the app falls back to the local JSON store (VPS/dev) or Upstash Redis.
 - Videos play inline from Supabase Storage on the poster-wall rows and in the portfolio lightbox.
   Prefer MP4 (H.264) for the widest browser support; the bucket accepts up to 50 MB per file.
 

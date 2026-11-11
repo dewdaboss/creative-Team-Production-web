@@ -55,7 +55,7 @@ Is project me **Supabase** already configured hai: gallery table + public
 
 1. [supabase.com](https://supabase.com) → free project banao (region: **Mumbai / ap-south-1**)
 2. **SQL Editor** → [`docs/supabase-setup.sql`](./docs/supabase-setup.sql) ka poora content paste karke **Run** karo
-   (table, RLS policies, updated_at trigger aur public bucket — sab idempotent hai)
+   (gallery / leads / reviews / stats tables, RLS policies, visitor counter function aur public bucket — sab idempotent hai)
 3. **Project Settings → API** se copy karo: `Project URL` aur `service_role` key
 4. Vercel → Project → **Settings → Environment Variables** me add karo (Production + Preview + Development):
 
@@ -68,8 +68,9 @@ Is project me **Supabase** already configured hai: gallery table + public
 5. **Deployments → Redeploy**
 
 ✅ Ab `/admin → Gallery` se upload ki gayi photos **aur videos** seedha Supabase Storage
-jaati hain aur website par turant live dikhti hain. Local development me bina Supabase ke bhi
-uploads `public/uploads/` me kaam karte hain.
+jaati hain aur website par turant live dikhti hain. **Booking enquiries, reviews aur counters bhi
+Supabase me save hote hain** — Vercel par redeploy ke baad bhi kuch nahi gubta.
+Local development me bina Supabase ke bhi uploads `public/uploads/` me kaam karte hain.
 
 > **Note:** `service_role` key sirf server par rehti hai — uploads `/api/admin/upload` route se
 > hote hain, browser me key kabhi nahi jaati. File limits: image 15 MB, video 50 MB (MP4/WebM/MOV).
