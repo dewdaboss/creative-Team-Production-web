@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
-import { getGallery, saveGallery } from "@/lib/store";
-import type { GalleryItem } from "@/lib/types";
+import {
+  createGalleryItem,
+  deleteGalleryItem,
+  listGalleryItems,
+  moveGalleryItem,
+  updateGalleryItem,
+  usingSupabase,
+} from "@/lib/gallery";
+import { ROW_KEYS } from "@/lib/gallery-rows";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const rowKeySchema = z.enum(["hero", "wall-a", "wall-b", "gallery"]);
 
 const itemSchema = z.object({
   type: z.enum(["photo", "reel"]),
@@ -16,6 +24,26 @@ const itemSchema = z.object({
   embedUrl: z.string().optional(),
   views: z.string().max(12).optional(),
   duration: z.string().max(8).optional(),
+  mediaType: z.enum(["image", "video"]).optional(),
+  rowKey: rowKeySchema.optional(),
+  featured: z.boolean().optional(),
+  visible: z.boolean().optional(),
+});
+
+const patchSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1).max(120).optional(),
+  category: z.string().min(1).max(60).optional(),
+  src: z.string().min(1).optional(),
+  visible: z.boolean().optional(),
+  featured: z.boolean().optional(),
+  order: z.number().int().optional(),
+  embedUrl: z.string().optional(),
+  views: z.string().max(12).optional(),
+  duration: z.string().max(8).optional(),
+  mediaType: z.enum(["image", "video"]).optional(),
+  rowKey: rowKeySchema.optional(),
+  move: z.enum(["up", "down"]).optional(),
 });
 
 function unauthorized() {
@@ -28,8 +56,13 @@ export async function GET() {
   } catch {
     return unauthorized();
   }
-  const items = (await getGallery()).sort((a, b) => a.order - b.order);
-  return NextResponse.json({ items });
+  const items = await listGalleryItems();
+  const order = Object.fromEntries(ROW_KEYS.map((k, i) => [k, i]));
+  const sorted = items.sort(
+    (a, b) =>
+      (order[a.rowKey ?? "gallery"] ?? 9) - (order[b.rowKey ?? "gallery"] ?? 9) || a.order - b.order
+  );
+  return NextResponse.json({ items: sorted, rows: ROW_KEYS, backend: usingSupabase ? "supabase" : "json" });
 }
 
 export async function POST(req: Request) {
@@ -42,29 +75,14 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ ok: false, error: "Invalid gallery item." }, { status: 400 });
   }
-  const items = await getGallery();
-  const order = items.reduce((m, i) => Math.max(m, i.order), 0) + 1;
-  const item: GalleryItem = {
-    id: randomUUID(),
-    visible: true,
-    order,
-    createdAt: new Date().toISOString(),
-    ...parsed.data,
-  };
-  items.push(item);
-  await saveGallery(items);
-  return NextResponse.json({ ok: true, item });
+  try {
+    const item = await createGalleryItem(parsed.data);
+    return NextResponse.json({ ok: true, item });
+  } catch (e) {
+    console.error("gallery create failed", e);
+    return NextResponse.json({ ok: false, error: "Could not save the gallery item." }, { status: 500 });
+  }
 }
-
-const patchSchema = z.object({
-  id: z.string(),
-  title: z.string().min(1).max(120).optional(),
-  category: z.string().min(1).max(60).optional(),
-  visible: z.boolean().optional(),
-  featured: z.boolean().optional(),
-  order: z.number().int().optional(),
-  embedUrl: z.string().optional(),
-});
 
 export async function PATCH(req: Request) {
   try {
@@ -76,13 +94,20 @@ export async function PATCH(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ ok: false, error: "Invalid update." }, { status: 400 });
   }
-  const { id, ...changes } = parsed.data;
-  const items = await getGallery();
-  const idx = items.findIndex((i) => i.id === id);
-  if (idx === -1) return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
-  items[idx] = { ...items[idx], ...changes };
-  await saveGallery(items);
-  return NextResponse.json({ ok: true, item: items[idx] });
+  const { id, move, ...changes } = parsed.data;
+  try {
+    if (move) {
+      const ok = await moveGalleryItem(id, move);
+      if (!ok) return NextResponse.json({ ok: false, error: "Already at the edge of this row." }, { status: 400 });
+      return NextResponse.json({ ok: true });
+    }
+    const item = await updateGalleryItem(id, changes);
+    if (!item) return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+    return NextResponse.json({ ok: true, item });
+  } catch (e) {
+    console.error("gallery update failed", e);
+    return NextResponse.json({ ok: false, error: "Could not update the gallery item." }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: Request) {
@@ -94,11 +119,12 @@ export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ ok: false, error: "Missing id." }, { status: 400 });
-  const items = await getGallery();
-  const next = items.filter((i) => i.id !== id);
-  if (next.length === items.length) {
-    return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+  try {
+    const ok = await deleteGalleryItem(id);
+    if (!ok) return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error("gallery delete failed", e);
+    return NextResponse.json({ ok: false, error: "Could not delete the gallery item." }, { status: 500 });
   }
-  await saveGallery(next);
-  return NextResponse.json({ ok: true });
 }

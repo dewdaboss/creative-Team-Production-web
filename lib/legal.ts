@@ -13,8 +13,8 @@ import { site } from "./site";
  */
 export const legalConfig = {
   /** Display dates — update together whenever the policy text changes. */
-  lastUpdated: "11 November 2026",
-  effectiveDate: "11 November 2026",
+  lastUpdated: "12 November 2026",
+  effectiveDate: "12 November 2026",
 
   /** Canonical site URL (override via NEXT_PUBLIC_SITE_URL when a custom domain is live). */
   siteUrl:
@@ -54,6 +54,8 @@ export const legalConfig = {
     jurisdiction: null as string | null,
     /** Named grievance / privacy contact, if any. */
     grievanceContact: null as string | null,
+    /** Detailed refund schedule (e.g. "50% refund if cancelled 7+ days before"). */
+    refundPolicy: null as string | null,
   },
 } as const;
 

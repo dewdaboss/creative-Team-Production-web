@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Reveal from "./Reveal";
+import { POSTER_ROTATES, POSTER_TILTS } from "@/lib/gallery-rows";
+import type { GalleryItem } from "@/lib/types";
 
 type Poster = {
   src: string;
@@ -10,6 +12,7 @@ type Poster = {
   cat: string;
   tilt: string;
   ry: string;
+  video?: boolean;
 };
 
 const ROW_A: Poster[] = [
@@ -29,7 +32,21 @@ const ROW_B: Poster[] = [
   { src: "/images/gallery/bts.jpg", title: "On Set", cat: "BTS", tilt: "-1.8deg", ry: "6deg" },
 ];
 
-export default function PosterStrip() {
+function postersFrom(items: GalleryItem[], offset = 0): Poster[] {
+  return items.map((item, i) => ({
+    src: item.src,
+    title: item.title,
+    cat: item.category,
+    tilt: POSTER_TILTS[(i + offset) % POSTER_TILTS.length],
+    ry: POSTER_ROTATES[(i + offset) % POSTER_ROTATES.length],
+    video: item.mediaType === "video",
+  }));
+}
+
+export default function PosterStrip({ rowA = [], rowB = [] }: { rowA?: GalleryItem[]; rowB?: GalleryItem[] }) {
+  const postersA = rowA.length > 0 ? postersFrom(rowA) : ROW_A;
+  const postersB = rowB.length > 0 ? postersFrom(rowB, 3) : ROW_B;
+
   return (
     <section className="relative overflow-hidden border-y border-line/60 bg-[#060806] py-16 sm:py-24">
       {/* decorative background */}
@@ -55,15 +72,15 @@ export default function PosterStrip() {
         <div className="poster-stage relative">
           {/* Row A */}
           <div className="poster-plane-a flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-none">
-            {ROW_A.map((p, i) => (
-              <PosterCard key={p.src} poster={p} index={i} />
+            {postersA.map((p, i) => (
+              <PosterCard key={`a-${p.src}-${i}`} poster={p} index={i} />
             ))}
           </div>
 
           {/* Row B */}
           <div className="poster-plane-b mt-6 flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-none">
-            {ROW_B.map((p, i) => (
-              <PosterCard key={p.src} poster={p} index={i + 5} />
+            {postersB.map((p, i) => (
+              <PosterCard key={`b-${p.src}-${i}`} poster={p} index={i + 5} />
             ))}
           </div>
 
@@ -93,7 +110,20 @@ function PosterCard({ poster, index }: { poster: Poster; index: number }) {
     >
       <div className="relative h-[280px] w-[190px] overflow-hidden rounded-2xl border border-line bg-panel shadow-card transition-all duration-500 group-hover:border-neon/40 group-hover:shadow-glow sm:h-[340px] sm:w-[230px]">
         <div className="animate-kenburns absolute inset-0">
-          <Image src={poster.src} alt={poster.title} fill className="object-cover" sizes="230px" />
+          {poster.video ? (
+            <video
+              src={poster.src}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              aria-label={poster.title}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <Image src={poster.src} alt={poster.title} fill className="object-cover" sizes="230px" />
+          )}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 p-4">
@@ -101,8 +131,14 @@ function PosterCard({ poster, index }: { poster: Poster; index: number }) {
           <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-neon-soft">{poster.cat}</p>
         </div>
         <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-black/60 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white/80 backdrop-blur">
-          CTP Original
+          {poster.video ? "CTP Reel" : "CTP Original"}
         </div>
+        {poster.video && (
+          <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-[9px] font-bold tracking-[0.16em] text-white/80 backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+            LIVE
+          </span>
+        )}
       </div>
     </motion.div>
   );

@@ -19,19 +19,22 @@ export const metadata: Metadata = {
 
 const TOC: LegalTocItem[] = [
   { id: "introduction", number: "01", title: "Introduction" },
-  { id: "services", number: "02", title: "Our Services" },
-  { id: "booking", number: "03", title: "Booking and Confirmation" },
-  { id: "payment", number: "04", title: "Payment Terms" },
-  { id: "cancellation", number: "05", title: "Cancellation and Rescheduling" },
-  { id: "shoot-terms", number: "06", title: "Photoshoot and Videography Terms" },
-  { id: "delivery", number: "07", title: "Photo and Video Delivery" },
-  { id: "editing", number: "08", title: "Editing and Revisions" },
-  { id: "responsibilities", number: "09", title: "Client Responsibilities" },
-  { id: "copyright", number: "10", title: "Copyright and Usage Rights" },
-  { id: "portfolio", number: "11", title: "Portfolio and Social Media Usage" },
-  { id: "liability", number: "12", title: "Limitation of Liability" },
-  { id: "changes", number: "13", title: "Changes to Terms" },
-  { id: "contact", number: "14", title: "Contact Information" },
+  { id: "services", number: "02", title: "Our Photography & Videography Services" },
+  { id: "booking-process", number: "03", title: "Booking Process" },
+  { id: "booking-confirmation", number: "04", title: "Booking Confirmation" },
+  { id: "payment", number: "05", title: "Payment Terms" },
+  { id: "cancellation", number: "06", title: "Cancellation Policy" },
+  { id: "rescheduling", number: "07", title: "Rescheduling Policy" },
+  { id: "shoot-terms", number: "08", title: "Photoshoot Guidelines" },
+  { id: "delivery", number: "09", title: "Video & Photo Delivery" },
+  { id: "editing", number: "10", title: "Editing & Revisions" },
+  { id: "copyright", number: "11", title: "Copyright & Ownership" },
+  { id: "portfolio", number: "12", title: "Portfolio Usage Rights" },
+  { id: "responsibilities", number: "13", title: "Client Responsibilities" },
+  { id: "refund", number: "14", title: "Refund Policy" },
+  { id: "liability", number: "15", title: "Limitation of Liability" },
+  { id: "changes", number: "16", title: "Changes to Terms" },
+  { id: "contact", number: "17", title: "Contact Information" },
 ];
 
 export default function TermsPage() {
@@ -68,7 +71,7 @@ export default function TermsPage() {
       </LegalSection>
 
       {/* 02 — Our Services */}
-      <LegalSection id="services" number="02" title="Our Services">
+      <LegalSection id="services" number="02" title="Our Photography & Videography Services">
         <p>We provide the following creative services, each under its own package as shown on this website:</p>
         <LegalList>
           <li><strong>Photography Shoot</strong> — portraits, lifestyle and on-location photography, priced per photo or per hour.</li>
@@ -81,28 +84,45 @@ export default function TermsPage() {
         </LegalList>
         <p>
           The exact deliverables for your booking — what is included, what is not, and the price — are as described in
-          the package you select and confirmed in writing before the shoot (see Section 3).
+          the package you select and confirmed in writing before the shoot (see Sections 3 and 4).
         </p>
       </LegalSection>
 
-      {/* 03 — Booking and Confirmation */}
-      <LegalSection id="booking" number="03" title="Booking and Confirmation">
+      {/* 03 — Booking Process */}
+      <LegalSection id="booking-process" number="03" title="Booking Process">
         <p>
-          Submitting the online booking form (or messaging us on WhatsApp) sends us an <strong>enquiry with an
-          estimate</strong> — it does not by itself confirm a booking. A booking is confirmed only when we agree the
-          service, package, date, location and price with you in writing (for example, by WhatsApp, email or a quote
-          message) and any advance required by that confirmation has been received.
+          Booking starts with an enquiry. You can submit the online form on this website or message us on WhatsApp with
+          the details of the shoot you have in mind. Everything you share is used only to prepare your estimate and
+          reply to you — see our <Link href="/privacy-policy">Privacy Policy</Link>.
         </p>
         <LegalList>
-          <li>To book, share your name, phone number, shoot location, preferred date and the service/package you want. We may ask for additional details before confirming.</li>
-          <li>For packages marked “custom quote” or “inquiry”, the price is agreed after we understand your requirements — the website does not charge you automatically.</li>
-          <li>Travel within 10 km of our studio is included. Travel charges apply beyond 10 km, as confirmed in your quote.</li>
-          <li>Dates and slots are held only after written confirmation. If we cannot accommodate your preferred date, we will suggest alternatives.</li>
+          <li><strong>What to include:</strong> your name, phone number, shoot location, preferred date, the service and package you want, and any reference links or notes that help us understand the brief.</li>
+          <li><strong>No online payment:</strong> this website does not take payments or card details. Nothing is charged when you submit the form.</li>
+          <li><strong>Estimates:</strong> the website shows starting prices and calculates an estimate for the options you pick. An estimate is not a final price.</li>
+          <li><strong>Custom work:</strong> for product shoots, long-form video, project editing and other custom work, we quote after reviewing your requirements.</li>
+          <li><strong>Travel:</strong> travel within 10 km of our studio in Indore is included. Travel beyond 10 km is quoted separately and confirmed in writing.</li>
+          <li><strong>Response time:</strong> we reply during working hours. If you have not heard from us, please message us on WhatsApp or call — we do not want you waiting on a date.</li>
         </LegalList>
       </LegalSection>
 
-      {/* 04 — Payment Terms */}
-      <LegalSection id="payment" number="04" title="Payment Terms">
+      {/* 04 — Booking Confirmation */}
+      <LegalSection id="booking-confirmation" number="04" title="Booking Confirmation">
+        <p>
+          A submitted enquiry is not a confirmed booking. Your booking is confirmed only when we have agreed the
+          service, package, date, location and price with you in writing (for example through a WhatsApp or email
+          confirmation) and any advance stated in that confirmation has been received.
+        </p>
+        <LegalList>
+          <li><strong>Written confirmation:</strong> keep the message or quote we send you — it is the reference for what is included in your booking.</li>
+          <li><strong>Date hold:</strong> a date or slot is held only after written confirmation. Dates discussed but not confirmed remain open for other clients.</li>
+          <li><strong>Availability:</strong> if your preferred date is not available, we will offer alternatives that fit the same brief.</li>
+          <li><strong>Changes before the shoot:</strong> if the brief, package, location or date changes before the shoot, tell us early — price and availability may need to be re-confirmed.</li>
+          <li><strong>Advance:</strong> where an advance is required, it is stated in your confirmation; the balance schedule is agreed there too.</li>
+        </LegalList>
+      </LegalSection>
+
+      {/* 05 — Payment Terms */}
+      <LegalSection id="payment" number="05" title="Payment Terms">
         <p>All prices on this website are in Indian Rupees (₹). The price for your booking is the price confirmed in writing with you — website figures are starting prices or estimates unless your confirmation states otherwise.</p>
         <LegalList>
           <li><strong>How to pay:</strong> this website has no online payment gateway. Payment is made by the method agreed in your written confirmation (for example, bank transfer or UPI). Please keep your payment receipt.</li>
@@ -128,43 +148,59 @@ export default function TermsPage() {
         )}
       </LegalSection>
 
-      {/* 05 — Cancellation and Rescheduling */}
-      <LegalSection id="cancellation" number="05" title="Cancellation and Rescheduling">
+      {/* 06 — Cancellation Policy */}
+      <LegalSection id="cancellation" number="06" title="Cancellation Policy">
         <p>
-          Life happens — if you need to cancel or move a confirmed booking, contact us as early as possible by phone,
-          WhatsApp or email so we can try to reschedule. How any advance is treated on cancellation or rescheduling is
-          as stated in your written confirmation.
+          If you need to cancel a confirmed booking, contact us as early as possible by phone, WhatsApp or email and
+          tell us which booking and date it relates to. How any advance is treated on cancellation is stated in your
+          written confirmation; where your confirmation does not set a rule, we will discuss it with you fairly rather
+          than apply a hidden penalty.
         </p>
         <LegalList>
-          <li><strong>Rescheduling:</strong> we will do our best to move your shoot to a new date that works for both sides, subject to crew and studio availability.</li>
-          <li><strong>Cancellation:</strong> if a booking is cancelled, any advance treatment follows your written confirmation. If your confirmation does not state a rule, we will discuss the situation with you in good faith.</li>
-          <li><strong>Monthly packages:</strong> monthly growth retainers can be cancelled anytime after the first month, as stated on the website.</li>
-          <li><strong>Weather, venue or force majeure:</strong> if a shoot cannot go ahead due to weather, venue access or other events beyond reasonable control, we will work with you to reschedule.</li>
-          <li><strong>No-show:</strong> if the client or venue is unavailable at the agreed time without prior notice, the shoot may be treated as cancelled under your confirmation.</li>
+          <li><strong>Before the shoot:</strong> cancellation terms, including any advance treatment, are as stated in your written confirmation.</li>
+          <li><strong>Monthly packages:</strong> monthly growth retainers can be cancelled anytime after the first month, as stated on the website. Work already delivered remains payable.</li>
+          <li><strong>Weather, venue access or events outside reasonable control:</strong> if a shoot cannot proceed for these reasons, we will work with you to reschedule; it is not treated as your cancellation.</li>
+          <li><strong>No-show:</strong> if the client, talent or venue is unavailable at the agreed time without prior notice, the shoot may be treated as cancelled under your confirmation.</li>
+          <li><strong>Cancellation by us:</strong> if we cannot deliver a confirmed shoot for reasons within our control, we will offer a substitute date or a fair resolution, including a refund of amounts paid for work not delivered.</li>
         </LegalList>
         {isConfigured(cfg.cancellationNoticePeriod) ? (
           <p>Please notify us at least <strong>{cfg.cancellationNoticePeriod}</strong> before the shoot to reschedule without penalty.</p>
         ) : (
           <ConfigNote label="Notice period">
-            A standard notice period for free rescheduling has not yet been published. Until it is set in{" "}
+            A standard notice period for free rescheduling or cancellation has not yet been published. Until it is set in{" "}
             <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">lib/legal.ts</code>, please contact us as early as possible — the earlier you tell us, the more options we can offer.
           </ConfigNote>
         )}
       </LegalSection>
 
-      {/* 06 — Photoshoot and Videography Terms */}
-      <LegalSection id="shoot-terms" number="06" title="Photoshoot and Videography Terms">
+      {/* 07 — Rescheduling Policy */}
+      <LegalSection id="rescheduling" number="07" title="Rescheduling Policy">
+        <p>
+          Life happens. If you need to move a confirmed booking to another date, tell us as soon as you know and we will
+          do our best to find a new slot that works for both sides, subject to crew and studio availability.
+        </p>
+        <LegalList>
+          <li><strong>How to reschedule:</strong> message us on WhatsApp, call, or email with the original date and your preferred new date.</li>
+          <li><strong>Availability:</strong> a new date is confirmed only when we confirm it in writing. Popular weekends fill up first, so earlier is better.</li>
+          <li><strong>Repeated changes:</strong> if a booking is moved repeatedly, or moved at very short notice, we may need to treat it as a cancellation under Section 6 and discuss a fresh booking.</li>
+          <li><strong>Rescheduling by us:</strong> if we must move a shoot for reasons such as weather, illness or equipment failure, we will offer to reschedule at no extra cost, or a fair alternative.</li>
+          <li><strong>Seasonal or event dates:</strong> for weddings, launches and events tied to a fixed date, rescheduling may not be possible — please check your confirmation.</li>
+        </LegalList>
+      </LegalSection>
+
+      {/* 08 — Photoshoot Guidelines */}
+      <LegalSection id="shoot-terms" number="08" title="Photoshoot Guidelines">
         <LegalList>
           <li>Please ensure the venue, location access, products, outfits, models or talent agreed for the shoot are ready at the scheduled time.</li>
           <li>You are responsible for obtaining any permissions needed for the location, people and property featured in the shoot, including consent from parents or guardians for minors.</li>
           <li>We may adjust the schedule, angles or setup on the day to achieve the best quality, and we will keep you informed of any significant change.</li>
           <li>Please follow reasonable safety instructions on set. We may pause or stop a shoot if conditions are unsafe.</li>
-          <li>Raw or unedited files are included only if your package or written confirmation states so. Otherwise, delivery is of edited, finished files as described in Section 7.</li>
+          <li>Raw or unedited files are included only if your package or written confirmation states so. Otherwise, delivery is of edited, finished files as described in Section 9.</li>
         </LegalList>
       </LegalSection>
 
-      {/* 07 — Photo and Video Delivery */}
-      <LegalSection id="delivery" number="07" title="Photo and Video Delivery">
+      {/* 09 — Video & Photo Delivery */}
+      <LegalSection id="delivery" number="09" title="Video & Photo Delivery">
         <p>Finished photos and videos are delivered as download links (for example, Google Drive or WeTransfer) or by another method agreed in your confirmation, in platform-ready formats suitable for Instagram, YouTube and print where relevant.</p>
         <LegalList>
           <li>Delivery timelines are as stated in your package or written confirmation. As a guide, unedited photos are typically delivered within 24 hours and edited photos within 48 hours; reels and larger projects follow the timeline in your confirmation.</li>
@@ -181,8 +217,8 @@ export default function TermsPage() {
         )}
       </LegalSection>
 
-      {/* 08 — Editing and Revisions */}
-      <LegalSection id="editing" number="08" title="Editing and Revisions">
+      {/* 10 — Editing & Revisions */}
+      <LegalSection id="editing" number="10" title="Editing & Revisions">
         <p>
           Editing is included as described in your package — for example, colour grading, cuts, captions, transitions,
           motion text and sound design where the package includes them. The number of revision rounds included depends
@@ -195,19 +231,8 @@ export default function TermsPage() {
         </LegalList>
       </LegalSection>
 
-      {/* 09 — Client Responsibilities */}
-      <LegalSection id="responsibilities" number="09" title="Client Responsibilities">
-        <LegalList>
-          <li>Provide accurate booking details, reference links and creative briefs, and confirm they are yours to share.</li>
-          <li>Ensure venue access, products, wardrobe, models and any required permissions are in place for the shoot.</li>
-          <li>Review delivered drafts and give consolidated feedback within a reasonable time.</li>
-          <li>Pay invoices on the schedule in your written confirmation.</li>
-          <li>Use the delivered content in line with Section 10, and do not ask us to create content that infringes anyone&apos;s rights or breaks the law.</li>
-        </LegalList>
-      </LegalSection>
-
-      {/* 10 — Copyright and Usage Rights */}
-      <LegalSection id="copyright" number="10" title="Copyright and Usage Rights">
+      {/* 11 — Copyright & Ownership */}
+      <LegalSection id="copyright" number="11" title="Copyright & Ownership">
         <p>
           Once full payment for a booking is received, you receive the right to use the final delivered photos and
           videos for the purpose agreed in your booking (for example, your business social media, website or
@@ -225,8 +250,8 @@ export default function TermsPage() {
         </ConfigNote>
       </LegalSection>
 
-      {/* 11 — Portfolio and Social Media Usage */}
-      <LegalSection id="portfolio" number="11" title="Portfolio and Social Media Usage">
+      {/* 12 — Portfolio Usage Rights */}
+      <LegalSection id="portfolio" number="12" title="Portfolio Usage Rights">
         <p>
           We love showing our work — but your content is yours. We will use photos or videos from your booking in our
           portfolio, Instagram, YouTube or website <strong>only with your prior written consent</strong>, unless your
@@ -239,8 +264,48 @@ export default function TermsPage() {
         </LegalList>
       </LegalSection>
 
-      {/* 12 — Limitation of Liability */}
-      <LegalSection id="liability" number="12" title="Limitation of Liability">
+      {/* 13 — Client Responsibilities */}
+      <LegalSection id="responsibilities" number="13" title="Client Responsibilities">
+        <LegalList>
+          <li>Provide accurate booking details, reference links and creative briefs, and confirm they are yours to share.</li>
+          <li>Ensure venue access, products, wardrobe, models and any required permissions are in place for the shoot.</li>
+          <li>Review delivered drafts and give consolidated feedback within a reasonable time.</li>
+          <li>Pay invoices on the schedule in your written confirmation.</li>
+          <li>Use the delivered content in line with Section 11, and do not ask us to create content that infringes anyone&apos;s rights or breaks the law.</li>
+        </LegalList>
+      </LegalSection>
+
+      {/* 14 — Refund Policy */}
+      <LegalSection id="refund" number="14" title="Refund Policy">
+        <p>
+          We want the money side to be as clear as the creative side. Because this website has no online payment
+          gateway, refunds are handled directly between us and you, using the same payment route you used.
+        </p>
+        <LegalList>
+          <li><strong>Work not delivered:</strong> if we cannot deliver a paid service for reasons within our control, amounts paid for the undelivered work are refunded.</li>
+          <li><strong>Work already delivered:</strong> amounts for shoots already held, editing already completed or files already delivered are not refundable, because that work has been performed.</li>
+          <li><strong>Advance on cancellation:</strong> how an advance is treated when you cancel follows your written confirmation and Section 6.</li>
+          <li><strong>Cancellations by us:</strong> if we cancel a confirmed shoot, you may choose a replacement date or a refund of amounts paid for work not performed.</li>
+          <li><strong>Quality concerns:</strong> if something about the delivery is not right, tell us within a reasonable time and we will review it under our revision process (Section 10) before any refund is considered.</li>
+          <li><strong>Monthly packages:</strong> fees for a month already in progress or already delivered are not refundable; you may cancel going forward as stated on the website.</li>
+        </LegalList>
+        {isConfigured(cfg.refundPolicy) ? (
+          <p>{cfg.refundPolicy}</p>
+        ) : (
+          <ConfigNote label="Detailed refund rules">
+            A detailed written refund schedule (for example percentages by days before the shoot) has not yet been
+            confirmed by the owner. Until it is set in{" "}
+            <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">lib/legal.ts</code>, the principles above and your written confirmation apply. Please ask us for the refund position in writing before paying an advance.
+          </ConfigNote>
+        )}
+        <p>
+          Refund requests can be sent to <a href={`mailto:${c.email}?subject=${encodeURIComponent("Refund Request")}`}>{c.email}</a> with
+          “Refund Request” in the subject line, along with your booking date and payment details.
+        </p>
+      </LegalSection>
+
+      {/* 15 — Limitation of Liability */}
+      <LegalSection id="liability" number="15" title="Limitation of Liability">
         <p>
           To the extent permitted by law, our total liability for any booking is limited to the amount you paid us for
           that booking. We are not liable for indirect, incidental or consequential loss (such as lost profits or lost
@@ -253,8 +318,8 @@ export default function TermsPage() {
         </LegalList>
       </LegalSection>
 
-      {/* 13 — Changes to Terms */}
-      <LegalSection id="changes" number="13" title="Changes to Terms">
+      {/* 16 — Changes to Terms */}
+      <LegalSection id="changes" number="16" title="Changes to Terms">
         <p>
           We may update these Terms &amp; Conditions from time to time. The “Last updated” date at the top of this page
           shows when they last changed. Bookings already confirmed in writing are governed by the terms in effect at
@@ -263,8 +328,8 @@ export default function TermsPage() {
         </p>
       </LegalSection>
 
-      {/* 14 — Contact Information */}
-      <LegalSection id="contact" number="14" title="Contact Information">
+      {/* 17 — Contact Information */}
+      <LegalSection id="contact" number="17" title="Contact Information">
         <p>For any question about these Terms &amp; Conditions, contact us:</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <a href={`mailto:${c.email}`} className="group rounded-2xl border border-line bg-white/[0.02] px-5 py-4 transition-all duration-300 hover:border-neon/50 hover:bg-neon/[0.05]">
