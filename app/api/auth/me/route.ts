@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { COOKIE_NAME, verifySessionToken } from "@/lib/auth";
+import { sessionToken, verifySessionToken } from "@/lib/auth";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const store = await cookies();
-  return NextResponse.json({ authenticated: verifySessionToken(store.get(COOKIE_NAME)?.value) });
+  const token = await sessionToken();
+  return NextResponse.json({ authenticated: verifySessionToken(token) });
 }

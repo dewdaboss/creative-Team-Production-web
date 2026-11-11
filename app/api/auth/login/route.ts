@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { checkCredentials, createSessionToken, COOKIE_NAME } from "@/lib/auth";
+import { checkCredentials, createSessionToken, COOKIE_NAME, sessionCookieOptions } from "@/lib/auth";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   if (!rateLimit(`login:${clientIp(req)}`, 8, 10 * 60_000)) {
@@ -13,13 +13,11 @@ export async function POST(req: Request) {
   if (!user || !pass || !checkCredentials(user, pass)) {
     return NextResponse.json({ ok: false, error: "Invalid credentials." }, { status: 401 });
   }
-  const store = await cookies();
-  store.set(COOKIE_NAME, createSessionToken(user), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 12 * 3600,
-  });
-  return NextResponse.json({ ok: true });
+
+  const token = createSessionToken(user);
+  const res = NextResponse.json({ ok: true, token });
+  // HttpOnly cookie (normal browsing) + token in the body (used as a Bearer
+  // header when the dashboard runs inside a cross-site iframe).
+  res.cookies.set(COOKIE_NAME, token, sessionCookieOptions(req));
+  return res;
 }

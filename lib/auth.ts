@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { serverEnv } from "./env";
 
 const COOKIE_NAME = "ctp_admin";
@@ -38,10 +38,53 @@ export function checkCredentials(user: string, pass: string): boolean {
   return a.length === b.length ? crypto.timingSafeEqual(a, b) : false;
 }
 
+function bearerToken(raw: string | null): string | null {
+  if (!raw) return null;
+  const match = /^Bearer\s+(.+)$/i.exec(raw.trim());
+  return match ? match[1] : null;
+}
+
+/**
+ * Session token from either the HttpOnly cookie (normal browsing) or the
+ * `Authorization: Bearer …` header (used by the dashboard when the site is
+ * embedded in an iframe, where browsers block the cookie).
+ */
+export async function sessionToken(): Promise<string | null> {
+  const h = await headers();
+  const bearer = bearerToken(h.get("authorization"));
+  if (bearer) return bearer;
+  const store = await cookies();
+  return store.get(COOKIE_NAME)?.value ?? null;
+}
+
+export async function isAdmin(): Promise<boolean> {
+  return verifySessionToken(await sessionToken());
+}
+
+/**
+ * Cookie attributes that survive being embedded on another origin
+ * (Arena/editor previews, partner dashboards):
+ *  - HTTPS  → SameSite=None + Secure + Partitioned (CHIPS)
+ *  - HTTP   → SameSite=Lax (plain localhost dev)
+ */
+export function sessionCookieOptions(req: Request, maxAge = SESSION_HOURS * 3600) {
+  const proto =
+    req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() ||
+    new URL(req.url).protocol.replace(":", "");
+  const secure = proto === "https";
+  return {
+    httpOnly: true,
+    sameSite: (secure ? "none" : "lax") as "none" | "lax",
+    secure,
+    partitioned: secure,
+    path: "/",
+    maxAge,
+  };
+}
+
 /** Throws 401-shaped marker if the admin session is missing/invalid. */
 export async function requireAdmin(): Promise<void> {
-  const store = await cookies();
-  if (!verifySessionToken(store.get(COOKIE_NAME)?.value)) {
+  if (!verifySessionToken(await sessionToken())) {
     throw new AdminAuthError();
   }
 }
