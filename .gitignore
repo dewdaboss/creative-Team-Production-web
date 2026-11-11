@@ -33,3 +33,6 @@ next-env.d.ts
 /data/stats-runtime.json
 /public/uploads/*
 !/public/uploads/.gitkeep
+
+# downloaded project archives
+*.zip
