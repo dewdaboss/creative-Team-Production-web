@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Sparkles } from "lucide-react";
 import Logo from "./Logo";
@@ -16,9 +17,17 @@ const LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
+const LEGAL_LINKS = [
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms & Conditions", href: "/terms-and-conditions" },
+];
+
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  /** Anchor sections live on the home page — prefix them when on sub-pages. */
+  const homeHref = (hash: string) => (pathname === "/" ? hash : `/${hash}`);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -45,7 +54,7 @@ export default function Navbar() {
         }`}
       >
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
-          <Link href="#top" className="group flex items-center gap-3">
+          <Link href={homeHref("#top")} className="group flex items-center gap-3">
             <Logo size={44} className="transition-transform duration-500 group-hover:rotate-12" />
             <span className="font-display leading-none">
               <span className="block text-[15px] font-bold tracking-[0.14em] text-paper">CREATIVE TEAM</span>
@@ -59,7 +68,7 @@ export default function Navbar() {
             {LINKS.map((l) => (
               <a
                 key={l.href}
-                href={l.href}
+                href={homeHref(l.href)}
                 className="group relative text-[13px] font-medium uppercase tracking-[0.14em] text-mute transition-colors duration-300 hover:text-paper"
               >
                 {l.label}
@@ -69,7 +78,7 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden lg:block">
-            <a href="#booking" className="btn-neon !px-6 !py-2.5 text-xs">
+            <a href={homeHref("#booking")} className="btn-neon !px-6 !py-2.5 text-xs">
               <Sparkles size={15} />
               Book Now
             </a>
@@ -111,7 +120,7 @@ export default function Navbar() {
               {LINKS.map((l, i) => (
                 <motion.a
                   key={l.href}
-                  href={l.href}
+                  href={homeHref(l.href)}
                   onClick={() => setOpen(false)}
                   initial={{ opacity: 0, y: 26 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -123,7 +132,7 @@ export default function Navbar() {
                 </motion.a>
               ))}
               <motion.a
-                href="#booking"
+                href={homeHref("#booking")}
                 onClick={() => setOpen(false)}
                 initial={{ opacity: 0, y: 26 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -133,11 +142,28 @@ export default function Navbar() {
                 <Sparkles size={16} />
                 Book a Shoot
               </motion.a>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-faint"
+              >
+                {LEGAL_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="transition-colors hover:text-neon"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.45 }}
-                className="mt-8 text-xs uppercase tracking-[0.3em] text-faint"
+                className="mt-6 text-xs uppercase tracking-[0.3em] text-faint"
               >
                 {site.tagline}
               </motion.p>
