@@ -8,6 +8,11 @@ import {
   Images,
   Star,
   BarChart3,
+  ArrowUp,
+  ArrowDown,
+  Film,
+  LayoutTemplate,
+  ServerCog,
   LogOut,
   Trash2,
   Eye,
@@ -31,7 +36,8 @@ import {
 import Logo from "@/components/Logo";
 import { formatINR } from "@/lib/pricing";
 import { site } from "@/lib/site";
-import type { GalleryItem, Review } from "@/lib/types";
+import type { GalleryItem, GalleryRowKey, Review } from "@/lib/types";
+import { GALLERY_ROWS } from "@/lib/gallery-rows";
 
 /* ------------------------------------------------------------------ */
 /* shared helpers                                                      */
@@ -362,9 +368,42 @@ function LeadsTab({ onUnauthorized, onCount }: { onUnauthorized: (e: unknown) =>
 
 const CATEGORIES = ["Reels", "Product", "Portraits", "Weddings & Events", "Brand Campaigns", "Food & Hospitality", "Behind The Scenes"];
 
+type GalleryForm = {
+  type: "photo" | "reel";
+  title: string;
+  category: string;
+  src: string;
+  mediaType: "image" | "video";
+  rowKey: GalleryRowKey;
+  embedUrl: string;
+  views: string;
+  duration: string;
+};
+
+const EMPTY_FORM: GalleryForm = {
+  type: "photo",
+  title: "",
+  category: CATEGORIES[0],
+  src: "",
+  mediaType: "image",
+  rowKey: "gallery",
+  embedUrl: "",
+  views: "",
+  duration: "",
+};
+
+const ROW_ICONS: Record<GalleryRowKey, typeof Images> = {
+  hero: Sparkles,
+  "wall-a": LayoutTemplate,
+  "wall-b": LayoutTemplate,
+  gallery: Images,
+};
+
 function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }) {
   const [items, setItems] = useState<GalleryItem[] | null>(null);
-  const [form, setForm] = useState({ type: "photo" as "photo" | "reel", title: "", category: CATEGORIES[0], src: "", embedUrl: "", views: "", duration: "" });
+  const [backend, setBackend] = useState<string>("");
+  const [rowFilter, setRowFilter] = useState<"all" | GalleryRowKey>("all");
+  const [form, setForm] = useState<GalleryForm>(EMPTY_FORM);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState("");
@@ -372,8 +411,9 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
 
   const load = useCallback(async () => {
     try {
-      const d = await api<{ items: GalleryItem[] }>("/api/admin/gallery");
+      const d = await api<{ items: GalleryItem[]; backend?: string }>("/api/admin/gallery");
       setItems(d.items);
+      if (d.backend) setBackend(d.backend);
     } catch (e) {
       onUnauthorized(e);
     }
@@ -383,30 +423,60 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
     load();
   }, [load]);
 
+  async function uploadViaCloudinary(file: File): Promise<string> {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", site.cloudinaryPreset);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${site.cloudinaryCloud}/auto/upload`, {
+      method: "POST",
+      body: fd,
+    });
+    const data = (await res.json()) as { secure_url?: string; error?: { message?: string } };
+    if (!res.ok || !data.secure_url) throw new Error(data.error?.message ?? "Cloudinary upload failed.");
+    return data.secure_url;
+  }
+
   async function upload(file: File) {
     setUploading(true);
     setMsg("");
     try {
-      if (site.cloudinaryCloud && site.cloudinaryPreset) {
-        // Serverless mode — straight to Cloudinary (free tier), no local disk needed.
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("upload_preset", site.cloudinaryPreset);
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${site.cloudinaryCloud}/auto/upload`,
-          { method: "POST", body: fd }
-        );
-        const data = (await res.json()) as { secure_url?: string; error?: { message?: string } };
-        if (!res.ok || !data.secure_url) throw new Error(data.error?.message ?? "Cloudinary upload failed.");
-        setForm((f) => ({ ...f, src: data.secure_url! }));
-        setMsg("Uploaded to Cloudinary ✓ — now add a title and publish.");
-      } else {
-        const fd = new FormData();
-        fd.append("file", file);
-        const d = await api<{ path: string }>("/api/admin/upload", { method: "POST", body: fd });
-        setForm((f) => ({ ...f, src: d.path }));
-        setMsg("Uploaded ✓ — now add a title and publish.");
+      const isVideo = file.type.startsWith("video/");
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = (await res.json().catch(() => ({}))) as {
+        url?: string;
+        path?: string;
+        mediaType?: "image" | "video";
+        error?: string;
+      };
+      if (res.status === 401) {
+        onUnauthorized(new Error("UNAUTHORIZED"));
+        return;
       }
+
+      let src = "";
+      if (res.ok && (data.url || data.path)) {
+        src = data.url ?? data.path ?? "";
+      } else if (site.cloudinaryCloud && site.cloudinaryPreset) {
+        // Legacy fallback for deployments without Supabase storage.
+        src = await uploadViaCloudinary(file);
+      } else {
+        throw new Error(data.error ?? "Upload failed.");
+      }
+
+      const mediaType: "image" | "video" = data.mediaType ?? (isVideo ? "video" : "image");
+      setForm((f) => ({
+        ...f,
+        src,
+        mediaType,
+        type: mediaType === "video" ? "reel" : f.type,
+      }));
+      setMsg(
+        mediaType === "video"
+          ? "Video uploaded ✓ — choose the row, add a title, then publish."
+          : "Image uploaded ✓ — choose the row, add a title, then publish."
+      );
     } catch (e) {
       setMsg((e as Error).message);
     } finally {
@@ -417,7 +487,7 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
   async function addItem(e: React.FormEvent) {
     e.preventDefault();
     if (!form.src) {
-      setMsg("Upload or paste an image URL first.");
+      setMsg("Upload a photo/video or paste a media URL first.");
       return;
     }
     setBusy(true);
@@ -430,17 +500,20 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
           title: form.title,
           category: form.category,
           src: form.src,
+          mediaType: form.mediaType,
+          rowKey: form.rowKey,
           embedUrl: form.embedUrl || undefined,
           views: form.views || undefined,
           duration: form.duration || undefined,
         }),
       });
-      setForm({ type: form.type, title: "", category: form.category, src: "", embedUrl: "", views: "", duration: "" });
+      setForm({ ...EMPTY_FORM, rowKey: form.rowKey, category: form.category, type: form.type });
       if (fileRef.current) fileRef.current.value = "";
-      setMsg("Published to the live gallery ✓");
+      setMsg("Published live ✓ — refresh your website to see it.");
       load();
     } catch (e2) {
-      setMsg((e2 as Error).message);
+      if (e2 instanceof Error && e2.message === "UNAUTHORIZED") onUnauthorized(e2);
+      else setMsg((e2 as Error).message);
     } finally {
       setBusy(false);
     }
@@ -456,7 +529,7 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
   }
 
   async function remove(id: string) {
-    if (!window.confirm("Delete this item from the gallery?")) return;
+    if (!window.confirm("Delete this item? The uploaded file is removed too.")) return;
     try {
       await api(`/api/admin/gallery?id=${id}`, { method: "DELETE" });
       load();
@@ -467,15 +540,47 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
 
   if (!items) return <Spinner />;
 
+  const visibleRows = GALLERY_ROWS.filter((r) => rowFilter === "all" || r.key === rowFilter);
+  const countFor = (key: GalleryRowKey) => items.filter((i) => (i.rowKey ?? "gallery") === key).length;
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
+    <div className="grid gap-6 lg:grid-cols-[400px_1fr]">
       {/* add form */}
       <form onSubmit={addItem} className="glass h-fit rounded-3xl p-6 lg:sticky lg:top-24">
         <p className="flex items-center gap-2 font-display text-base font-bold text-paper">
-          <Plus size={16} className="text-neon" /> Add to gallery
+          <Plus size={16} className="text-neon" /> Upload photo / video
+        </p>
+        <p className="mt-1 text-[11px] leading-relaxed text-faint">
+          Media is stored in your Supabase bucket and appears on the live site instantly.
         </p>
 
         <div className="mt-5 space-y-4">
+          {/* row placement */}
+          <div>
+            <label className="label">Where should it appear?</label>
+            <div className="grid grid-cols-2 gap-2">
+              {GALLERY_ROWS.map((row) => {
+                const Icon = ROW_ICONS[row.key];
+                const active = form.rowKey === row.key;
+                return (
+                  <button
+                    type="button"
+                    key={row.key}
+                    onClick={() => setForm((f) => ({ ...f, rowKey: row.key }))}
+                    className={`flex flex-col items-start gap-1 rounded-xl border px-3 py-2.5 text-left transition-all ${
+                      active ? "border-neon bg-neon/15 text-neon" : "border-line text-mute hover:border-neon/40"
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider">
+                      <Icon size={13} /> {row.short}
+                    </span>
+                    <span className="text-[10px] leading-snug text-faint">{row.hint}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-2">
             {(["photo", "reel"] as const).map((t) => (
               <button
@@ -507,35 +612,48 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
           </div>
 
           <div>
-            <label className="label">{form.type === "reel" ? "Cover image" : "Image"}</label>
+            <label className="label">{form.mediaType === "video" ? "Video file" : "Image"}</label>
             <div
               onClick={() => fileRef.current?.click()}
               className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line bg-raise/40 px-4 py-6 text-center transition-colors hover:border-neon/50"
             >
               {form.src ? (
                 <div className="relative h-28 w-full overflow-hidden rounded-lg">
-                  <Image src={form.src} alt="upload preview" fill className="object-cover" sizes="300px" />
+                  {form.mediaType === "video" ? (
+                    <video src={form.src} muted loop autoPlay playsInline className="h-full w-full object-cover" />
+                  ) : (
+                    <Image src={form.src} alt="upload preview" fill className="object-cover" sizes="300px" />
+                  )}
                 </div>
               ) : uploading ? (
                 <Loader2 size={20} className="animate-spin text-neon" />
               ) : (
                 <Upload size={20} className="text-neon" />
               )}
-              <p className="text-xs text-faint">{uploading ? "Uploading…" : form.src ? "Click to replace" : "Click to upload (JPG/PNG/WebP, ≤15 MB)"}</p>
+              <p className="text-xs text-faint">
+                {uploading ? "Uploading…" : form.src ? "Click to replace" : "Click to upload — images ≤15 MB, videos ≤50 MB"}
+              </p>
             </div>
             <input
               ref={fileRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp"
+              accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
               className="hidden"
               onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])}
             />
             <input
               className="input mt-2.5"
-              placeholder="…or paste an image URL / path"
+              placeholder="…or paste an image / video URL"
               value={form.src}
-              onChange={(e) => setForm((f) => ({ ...f, src: e.target.value }))}
+              onChange={(e) => {
+                const src = e.target.value;
+                const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(src);
+                setForm((f) => ({ ...f, src, mediaType: isVideo ? "video" : f.mediaType }));
+              }}
             />
+            <p className="mt-1.5 text-[11px] text-faint">
+              Tip: upload an MP4 (H.264) for smooth playback on phones — MOV files may not play in every browser.
+            </p>
           </div>
 
           {form.type === "reel" && (
@@ -560,49 +678,132 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
 
           {msg && <p className="rounded-xl border border-line bg-raise/50 px-3.5 py-2.5 text-xs text-neon-soft">{msg}</p>}
 
-          <button type="submit" disabled={busy} className="btn-neon w-full !py-3 text-xs disabled:opacity-60">
+          <button type="submit" disabled={busy || uploading} className="btn-neon w-full !py-3 text-xs disabled:opacity-60">
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
-            Publish
+            Publish live
           </button>
         </div>
       </form>
 
       {/* items list */}
-      <div className="space-y-3">
+      <div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setRowFilter("all")}
+              className={`rounded-xl border px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                rowFilter === "all" ? "border-neon bg-neon/15 text-neon" : "border-line text-mute hover:border-neon/40"
+              }`}
+            >
+              All rows · {items.length}
+            </button>
+            {GALLERY_ROWS.map((row) => (
+              <button
+                key={row.key}
+                onClick={() => setRowFilter(row.key)}
+                className={`rounded-xl border px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                  rowFilter === row.key ? "border-neon bg-neon/15 text-neon" : "border-line text-mute hover:border-neon/40"
+                }`}
+              >
+                {row.short} · {countFor(row.key)}
+              </button>
+            ))}
+          </div>
+          <span className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-faint">
+            <ServerCog size={12} className={backend === "supabase" ? "text-neon" : "text-faint"} />
+            {backend === "supabase" ? "Supabase storage" : "Local JSON store"}
+          </span>
+        </div>
+
         {items.length === 0 ? (
-          <Empty text="Gallery is empty — publish your first item." />
+          <Empty text="No media yet — upload your first photo or video." />
         ) : (
-          items.map((item) => (
-            <div key={item.id} className={`glass flex items-center gap-4 rounded-2xl p-3.5 transition-opacity ${item.visible ? "" : "opacity-50"}`}>
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-line">
-                <Image src={item.src} alt={item.title} fill className="object-cover" sizes="64px" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-display text-sm font-bold text-paper">{item.title}</p>
-                <p className="mt-0.5 flex items-center gap-2 text-[11px] uppercase tracking-wider text-faint">
-                  {item.type === "reel" ? <Clapperboard size={11} className="text-neon" /> : <Camera size={11} className="text-neon" />}
-                  {item.type} · {item.category}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-1.5">
-                <button
-                  title={item.visible ? "Hide from site" : "Show on site"}
-                  onClick={() => patch(item.id, { visible: !item.visible })}
-                  className={`rounded-lg border p-2 transition-colors ${item.visible ? "border-neon/40 text-neon" : "border-line text-faint hover:text-paper"}`}
-                >
-                  {item.visible ? <Eye size={15} /> : <EyeOff size={15} />}
-                </button>
-                <button
-                  title="Delete"
-                  onClick={() => remove(item.id)}
-                  className="rounded-lg border border-red-500/30 p-2 text-red-300 transition-colors hover:bg-red-500/10"
-                >
-                  <Trash2 size={15} />
-                </button>
-              </div>
-            </div>
-          ))
+          <div className="space-y-6">
+            {visibleRows.map((row) => {
+              const rowItems = items
+                .filter((i) => (i.rowKey ?? "gallery") === row.key)
+                .sort((a, b) => a.order - b.order);
+              if (rowItems.length === 0) return null;
+              return (
+                <div key={row.key}>
+                  <div className="mb-2 flex items-center gap-2 px-1">
+                    <span className="h-px flex-1 bg-line" />
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-neon-soft">{row.label}</p>
+                    <span className="h-px flex-1 bg-line" />
+                  </div>
+                  <div className="space-y-3">
+                    {rowItems.map((item, index) => (
+                      <div key={item.id} className={`glass flex flex-wrap items-center gap-4 rounded-2xl p-3.5 transition-opacity ${item.visible ? "" : "opacity-50"}`}>
+                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-line bg-black">
+                          {item.mediaType === "video" ? (
+                            <video src={item.src} muted loop playsInline className="h-full w-full object-cover" />
+                          ) : (
+                            <Image src={item.src} alt={item.title} fill className="object-cover" sizes="64px" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-display text-sm font-bold text-paper">{item.title}</p>
+                          <p className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-wider text-faint">
+                            {item.mediaType === "video" ? <Film size={11} className="text-neon" /> : item.type === "reel" ? <Clapperboard size={11} className="text-neon" /> : <Camera size={11} className="text-neon" />}
+                            {item.mediaType === "video" ? "video" : item.type} · {item.category}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+                          <select
+                            aria-label="Move to row"
+                            value={item.rowKey ?? "gallery"}
+                            onChange={(e) => patch(item.id, { rowKey: e.target.value })}
+                            className="rounded-lg border border-line bg-panel px-2 py-2 text-[10px] font-bold uppercase tracking-wider text-mute hover:border-neon/40"
+                          >
+                            {GALLERY_ROWS.map((r) => (
+                              <option key={r.key} value={r.key}>{r.short}</option>
+                            ))}
+                          </select>
+                          <button
+                            title="Move up"
+                            disabled={index === 0}
+                            onClick={() => patch(item.id, { move: "up" })}
+                            className="rounded-lg border border-line p-2 text-faint transition-colors hover:text-paper disabled:opacity-30"
+                          >
+                            <ArrowUp size={15} />
+                          </button>
+                          <button
+                            title="Move down"
+                            disabled={index === rowItems.length - 1}
+                            onClick={() => patch(item.id, { move: "down" })}
+                            className="rounded-lg border border-line p-2 text-faint transition-colors hover:text-paper disabled:opacity-30"
+                          >
+                            <ArrowDown size={15} />
+                          </button>
+                          <button
+                            title={item.visible ? "Hide from site" : "Show on site"}
+                            onClick={() => patch(item.id, { visible: !item.visible })}
+                            className={`rounded-lg border p-2 transition-colors ${item.visible ? "border-neon/40 text-neon" : "border-line text-faint hover:text-paper"}`}
+                          >
+                            {item.visible ? <Eye size={15} /> : <EyeOff size={15} />}
+                          </button>
+                          <button
+                            title="Delete"
+                            onClick={() => remove(item.id)}
+                            className="rounded-lg border border-red-500/30 p-2 text-red-300 transition-colors hover:bg-red-500/10"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
+
+        <p className="mt-6 text-[11px] leading-relaxed text-faint">
+          Rows map to the live home page: <span className="text-neon-soft">Hero</span> shows the fanned posters beside the headline,{" "}
+          <span className="text-neon-soft">Row A / Row B</span> are the two tilted poster strips, and{" "}
+          <span className="text-neon-soft">Portfolio</span> is the main grid with the lightbox player. If a row is empty, the built-in posters are shown.
+        </p>
       </div>
     </div>
   );

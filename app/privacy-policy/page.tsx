@@ -21,13 +21,14 @@ const TOC: LegalTocItem[] = [
   { id: "introduction", number: "01", title: "Introduction" },
   { id: "information-we-collect", number: "02", title: "Information We Collect" },
   { id: "personal-information", number: "03", title: "Personal Information" },
-  { id: "photos-videos", number: "04", title: "Photos and Videos Uploaded by Clients" },
+  { id: "photos-videos", number: "04", title: "Client Photos and Videos" },
   { id: "how-we-use", number: "05", title: "How We Use Your Information" },
-  { id: "storage-security", number: "06", title: "Data Storage and Security" },
+  { id: "storage-security", number: "06", title: "Supabase Storage and Data Security" },
   { id: "third-party", number: "07", title: "Third-Party Services" },
   { id: "cookies-analytics", number: "08", title: "Cookies and Website Analytics" },
-  { id: "retention-deletion", number: "09", title: "Data Retention and Deletion" },
-  { id: "contact", number: "10", title: "Contact Information" },
+  { id: "retention", number: "09", title: "Data Retention" },
+  { id: "deletion", number: "10", title: "Data Deletion Requests" },
+  { id: "contact", number: "11", title: "Contact Information" },
 ];
 
 export default function PrivacyPolicyPage() {
@@ -61,7 +62,7 @@ export default function PrivacyPolicyPage() {
           By using this website or submitting the booking form, you acknowledge that you have read this Privacy Policy.
           If you do not agree with how we handle information as described here, please do not submit the form — you can
           still reach us directly using the contact details in{" "}
-          <a href="#section-contact">Section 10</a>.
+          <a href="#section-contact">Section 11</a>.
         </p>
         <p>
           We may update this policy from time to time. The “Last updated” date at the top of this page shows when it
@@ -136,7 +137,7 @@ export default function PrivacyPolicyPage() {
       </LegalSection>
 
       {/* 04 — Photos and Videos Uploaded by Clients */}
-      <LegalSection id="photos-videos" number="04" title="Photos and Videos Uploaded by Clients">
+      <LegalSection id="photos-videos" number="04" title="Client Photos and Videos">
         <p>
           The booking form <strong>does not accept file uploads</strong>. If you want us to see photos, videos or
           references, please share a link (for example, a Drive, Instagram or YouTube link) in the reference-link
@@ -169,33 +170,41 @@ export default function PrivacyPolicyPage() {
         </p>
       </LegalSection>
 
-      {/* 06 — Data Storage and Security */}
-      <LegalSection id="storage-security" number="06" title="Data Storage and Security">
-        <p>Booking enquiries are stored so our team can follow up and keep a record of bookings. Depending on how the website is deployed, enquiry data may be held in:</p>
+      {/* 06 — Supabase Storage and Data Security */}
+      <LegalSection id="storage-security" number="06" title="Supabase Storage and Data Security">
+        <p>
+          Media and gallery data for this website are held in <strong>Supabase</strong> — a managed Postgres database and
+          file-storage service. When our team uploads a photo or video from the admin panel, the file goes to a
+          Supabase Storage bucket and only the file URL, title, category and the row it appears in are saved in the
+          website database. Booking enquiries are kept in the website&apos;s own enquiry store (described below).
+        </p>
+        <p>How the Supabase setup is configured:</p>
         <LegalList>
-          <li>The website&apos;s server-side store (local files on a dedicated server, or a managed database service on serverless hosting when configured).</li>
-          <li>A Google Sheet and the owner&apos;s email inbox, if the lead-automation webhook is configured.</li>
-          <li>Our WhatsApp chat history, if you contact us there.</li>
+          <li><strong>Public media, private control.</strong> The media bucket is readable by anyone with the file link — that is how photos and videos display publicly on the site — but uploading, editing and deleting require our owner-only admin session.</li>
+          <li><strong>Server-side access only.</strong> Uploads go through this website&apos;s own server, which holds the Supabase secret key. That key is never sent to your browser or included in the public website code.</li>
+          <li><strong>Row-level security.</strong> The gallery database table has row-level security enabled. Anonymous visitors can only read rows that are marked visible; writes are restricted.</li>
+          <li><strong>Encryption in transit.</strong> All traffic between this website, Supabase and your browser uses HTTPS.</li>
+          <li><strong>File limits.</strong> Uploads are restricted by file type and size (images up to 15 MB, videos up to 50 MB) to prevent abuse.</li>
         </LegalList>
-        <p>We take reasonable steps to protect the information we hold, including:</p>
+        <p>Other records are held as follows:</p>
         <LegalList>
-          <li>Serving the website over HTTPS on our hosting provider.</li>
+          <li>Booking enquiries are stored in the website&apos;s enquiry store — local files on a dedicated server, or a managed key-value database (Upstash Redis) when the site runs on serverless hosting.</li>
+          <li>If lead automation is configured, a copy of each enquiry is also sent to a Google Sheet and to the owner&apos;s email inbox.</li>
+          <li>If you message us on WhatsApp, the conversation sits in our WhatsApp chat history under WhatsApp&apos;s own policies.</li>
+        </LegalList>
+        <p>We also take these practical steps:</p>
+        <LegalList>
+          <li>Serving the whole website over HTTPS.</li>
           <li>Validating all form submissions on the server before they are stored.</li>
-          <li>Rate-limiting form and login attempts to reduce spam and brute-force abuse.</li>
-          <li>Keeping the owner-only admin session in an HttpOnly cookie that visitors cannot read from scripts.</li>
+          <li>Rate-limiting form submissions and admin login attempts.</li>
+          <li>Keeping the owner-only admin session in an HttpOnly cookie that page scripts cannot read.</li>
         </LegalList>
         <p>
-          No method of transmission or storage is completely secure, and email and WhatsApp are governed by their own
-          providers&apos; security practices. Please do not send highly sensitive information through the website form.
+          We do not claim that any system is perfectly secure: no method of transmission or storage is. Supabase,
+          Google, WhatsApp and our hosting provider each apply their own security practices under their own terms. Please
+          do not send highly sensitive information (such as ID documents or payment card numbers) through the website
+          form or WhatsApp.
         </p>
-        {isConfigured(cfg.dataRetentionPeriod) ? (
-          <p>Booking enquiry data is kept for <strong>{cfg.dataRetentionPeriod}</strong> and then deleted or anonymised, subject to any legal or accounting retention duties.</p>
-        ) : (
-          <ConfigNote label="Retention period">
-            A fixed retention period for booking enquiries has not yet been confirmed by the owner. Until it is set in{" "}
-            <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">lib/legal.ts</code>, enquiries are kept while they are needed for follow-up, records and legal duties. You can ask us to delete your enquiry at any time using Section 10.
-          </ConfigNote>
-        )}
       </LegalSection>
 
       {/* 07 — Third-Party Services */}
@@ -214,7 +223,8 @@ export default function PrivacyPolicyPage() {
             </thead>
             <tbody className="[&_td]:border-t [&_td]:border-line/60 [&_td]:px-4 [&_td]:py-3 [&_tr:first-child_td]:border-t-0">
               <tr><td className="font-semibold text-paper">Website hosting (Vercel)</td><td>Serves the website and processes basic technical logs.</td></tr>
-              <tr><td className="font-semibold text-paper">Managed database (Upstash Redis, if configured)</td><td>Stores enquiries and site data on serverless hosting.</td></tr>
+              <tr><td className="font-semibold text-paper">Supabase (database &amp; file storage)</td><td>Stores gallery photos and videos plus the information about which row of the site each item appears in.</td></tr>
+              <tr><td className="font-semibold text-paper">Managed database (Upstash Redis, if configured)</td><td>Stores booking enquiries and site counters on serverless hosting.</td></tr>
               <tr><td className="font-semibold text-paper">Google Apps Script → Google Sheets &amp; email (if configured)</td><td>Sends new booking enquiries to the owner&apos;s sheet and inbox.</td></tr>
               <tr><td className="font-semibold text-paper">WhatsApp (wa.me links)</td><td>Lets you message us directly. WhatsApp processes the conversation under Meta&apos;s policies.</td></tr>
               <tr><td className="font-semibold text-paper">Instagram embeds &amp; profile links</td><td>Shows Instagram reels in the portfolio lightbox and links to our profile.</td></tr>
@@ -225,7 +235,8 @@ export default function PrivacyPolicyPage() {
         </div>
         <p>
           At present this website does <strong>not</strong> run third-party advertising or product-analytics trackers.
-          If that changes, this section will be updated before the new service is added.
+          If that changes, this section will be updated before the new service is added. Files stored in Supabase
+          are served from Supabase&apos;s content network, so those requests reach Supabase&apos;s servers directly.
         </p>
       </LegalSection>
 
@@ -244,37 +255,74 @@ export default function PrivacyPolicyPage() {
         </p>
       </LegalSection>
 
-      {/* 09 — Data Retention and Deletion */}
-      <LegalSection id="retention-deletion" number="09" title="Data Retention and Deletion">
+      {/* 09 — Data Retention */}
+      <LegalSection id="retention" number="09" title="Data Retention">
         <p>
-          We keep booking enquiries for as long as they are needed to follow up, deliver the service, keep business
-          records and meet legal duties. The website&apos;s enquiry store keeps only the most recent 1,000 enquiries;
-          older entries roll off automatically.
+          We keep booking enquiries for as long as they are needed to follow up, deliver the service you booked, keep
+          ordinary business records and meet legal or accounting duties. The website&apos;s enquiry store keeps only the
+          most recent 1,000 enquiries; older entries roll off automatically.
         </p>
-        <p>You can ask us at any time to:</p>
+        <LegalList>
+          <li><strong>Gallery media</strong> (photos and videos we upload) stays in Supabase Storage until our team deletes it from the admin panel.</li>
+          <li><strong>Visitor counts</strong> are aggregate numbers only and are not linked to individual people.</li>
+          <li><strong>Admin session cookies</strong> expire after 12 hours.</li>
+          <li><strong>Booking drafts</strong> stay in your own browser until you submit or clear them — we never receive them.</li>
+        </LegalList>
+        {isConfigured(cfg.dataRetentionPeriod) ? (
+          <p>Booking enquiry data is kept for <strong>{cfg.dataRetentionPeriod}</strong> and then deleted or anonymised, subject to any legal or accounting retention duties.</p>
+        ) : (
+          <ConfigNote label="Retention period">
+            A fixed retention period for booking enquiries has not yet been confirmed by the owner. Until it is set in{" "}
+            <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">lib/legal.ts</code>, enquiries are kept while they are needed for follow-up, records and legal duties. You can ask us to delete your enquiry at any time using Section 11.
+          </ConfigNote>
+        )}
+        {isConfigured(cfg.fileRetentionAfterDelivery) ? (
+          <p>Delivered photo and video files are archived for <strong>{cfg.fileRetentionAfterDelivery}</strong> after delivery.</p>
+        ) : (
+          <ConfigNote label="Delivery file retention">
+            How long delivered files are archived has not yet been confirmed. Until it is set in{" "}
+            <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">lib/legal.ts</code>, please download and back up your delivered files once you receive them.
+          </ConfigNote>
+        )}
+      </LegalSection>
+
+      {/* 10 — Data Deletion Requests */}
+      <LegalSection id="deletion" number="10" title="Data Deletion Requests">
+        <p>You can contact us at any time to ask us to:</p>
         <LegalList>
           <li>Show you the personal information we hold about you from a booking enquiry.</li>
-          <li>Correct information that is inaccurate.</li>
+          <li>Correct information that is inaccurate or out of date.</li>
           <li>Delete your booking enquiry, subject to any records we must keep by law.</li>
+          <li>Remove client photos or videos of you from our website gallery and social channels, where we are able to do so.</li>
         </LegalList>
         <p>
-          To make a request, email <a href={`mailto:${c.email}?subject=${encodeURIComponent("Privacy Request")}`}>{c.email}</a> or
-          message us on WhatsApp with the subject “Privacy Request”, along with the name and phone number used in your
-          enquiry so we can locate it. We will verify your identity, respond within a reasonable time, and confirm once
-          the request is complete. Deleting the booking draft from your own browser is covered in Section 8.
+          To make a request, email <a href={`mailto:${c.email}?subject=${encodeURIComponent("Data Deletion Request")}`}>{c.email}</a> or
+          message us on WhatsApp with the subject “Data Deletion Request”, and include the name and phone number used in
+          your enquiry (or the shoot it relates to) so we can locate the record. We will confirm what we hold, verify
+          that the request is genuine, and tell you once the deletion is complete.
+        </p>
+        <LegalList>
+          <li><strong>What we can delete:</strong> enquiry records in our store, copies in our lead sheet where feasible, and gallery media we control.</li>
+          <li><strong>What we cannot always remove:</strong> messages already sent to our email inbox or WhatsApp history — you can delete them on your side, and we can delete them from ours on request.</li>
+          <li><strong>What we must keep:</strong> invoices, payment records or other documents we are legally required to retain.</li>
+          <li><strong>Your browser draft:</strong> clearing it is covered in Section 8 — it never reaches us.</li>
+        </LegalList>
+        <p>
+          We aim to respond to deletion requests within a reasonable time. If a request is complex we will tell you how
+          long it is likely to take.
         </p>
         {isConfigured(cfg.grievanceContact) ? (
           <p>For privacy concerns, contact: <strong>{cfg.grievanceContact}</strong>.</p>
         ) : (
           <ConfigNote label="Grievance contact">
             A named grievance or privacy contact has not yet been published. Until one is confirmed in{" "}
-            <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">lib/legal.ts</code>, please use the email address in Section 10 for privacy requests.
+            <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">lib/legal.ts</code>, please use the email address in Section 11 for privacy and deletion requests.
           </ConfigNote>
         )}
       </LegalSection>
 
-      {/* 10 — Contact Information */}
-      <LegalSection id="contact" number="10" title="Contact Information">
+      {/* 11 — Contact Information */}
+      <LegalSection id="contact" number="11" title="Contact Information">
         <p>For any question about this Privacy Policy or a privacy request, contact us:</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <a href={`mailto:${c.email}`} className="group rounded-2xl border border-line bg-white/[0.02] px-5 py-4 transition-all duration-300 hover:border-neon/50 hover:bg-neon/[0.05]">

@@ -17,8 +17,9 @@ Dark mode with black, white and dark-neon-green, an interactive 3D film-gear bac
 | **Process** | 8-step production pipeline with scroll-driven progress line + booking journey strip |
 | **Booking wizard** | Service → Package → Details with **dynamic pricing** (per-photo, per-hour, flat, monthly and custom-quote modes), quantity steppers, live estimate panel, draft autosave, validation, honeypot + rate limiting |
 | **Automation** | Every lead is saved locally, POSTed to a Google Apps Script webhook (**Google Sheet row + instant owner email**), or sent as a pre-filled **WhatsApp** message. See [AUTOMATION.md](./AUTOMATION.md) |
-| **Portfolio** | Filterable photo/reel gallery with animated layout, branded reel cards (views/duration) and a lightbox that **embeds Instagram reels** when a URL is attached |
-| **Admin panel** | `/admin` — secure owner login; manage gallery (upload files or paste URLs, show/hide, feature, delete), curate reviews, watch the **leads inbox**, and edit the animated counters |
+| **Portfolio** | Filterable photo/reel gallery with animated layout, branded reel cards (views/duration), inline **video playback** and a lightbox that also **embeds Instagram reels** when a URL is attached |
+| **Media storage** | Photos & videos live in **Supabase Storage** (`gallery` bucket) with metadata in the `gallery_items` table; the site falls back to the local JSON store when Supabase isn't configured |
+| **Admin panel** | `/admin` — secure owner login; **upload photos or videos**, choose exactly **which home-page row** each item appears in (Hero / Poster Row A / Poster Row B / Portfolio), reorder, show/hide, delete, curate reviews, watch the **leads inbox**, and edit the animated counters |
 | **Reviews** | Google-style rating summary, distribution bars and an auto-advancing review carousel |
 | **Social proof** | Animated Instagram follower **LIVE** counter, visitor counter (tracked server-side), projects/reels stats |
 | **Footer** | Contact info, social links (Instagram, YouTube, Facebook, WhatsApp) and a dark-styled **Google Maps** embed |
@@ -41,8 +42,9 @@ Production: `npm run build && npm start`.
 
 Website ko **₹0 me live** karo — Vercel free tier + free subdomain
 (`yourname.vercel.app`). Full Hinglish step-by-step guide: **[DEPLOY.md](./DEPLOY.md)**
-— includes free Upstash Redis (persistent leads/gallery) and free Cloudinary
-(admin uploads) setup. The store auto-switches: files locally, Redis on Vercel.
+— includes free **Supabase** (photo/video storage + gallery database) and free
+Upstash Redis (persistent leads/counters) setup. The store auto-switches:
+files locally, Redis on Vercel.
 
 ## 💰 Pricing catalog
 
@@ -75,20 +77,23 @@ app/                 Next.js App Router (pages + API routes)
 components/          UI: hero, marquee, services, booking wizard, gallery,
                      reviews, stats, footer, admin app
 components/three/    R3F 3D film-gear background
-lib/                 pricing catalog, JSON store, auth, rate-limit, notify, seeds
+lib/                 pricing catalog, gallery/Supabase layer, JSON store, auth, rate-limit, notify, seeds
 data/                JSON persistence (gallery, reviews, stats, leads)
-docs/                google-apps-script.gs automation bridge
+docs/                google-apps-script.gs automation bridge + supabase-setup.sql
 public/images/       generated brand imagery & portfolio seeds
 ```
 
 ## 🔐 Notes for production
 
 - Set `SESSION_SECRET`, `ADMIN_USER`, `ADMIN_PASS` and `NOTIFY_WEBHOOK_URL` in your host's env settings.
-- The JSON-file store is perfect for a VPS / Node server. On serverless platforms with a
-  read-only filesystem (e.g. Vercel without a volume), point `lib/store.ts` at a database
-  (Supabase/Neon/Mongo) — the accessors (`getGallery`, `getLeads`, …) are the only touchpoints.
-- Image uploads write to `public/uploads/` — same serverless caveat applies; swap the
-  `/api/admin/upload` handler for object storage (S3/R2) if needed.
+- **Media (photos + videos):** set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (server-only) and
+  optionally `SUPABASE_STORAGE_BUCKET` (default `gallery`). Run [`docs/supabase-setup.sql`](./docs/supabase-setup.sql)
+  once to create the table, policies and public bucket. Admin uploads then go straight to Supabase
+  Storage; without the keys the app falls back to the local JSON store and `public/uploads/`.
+- **Leads & counters on Vercel:** set `KV_REST_API_URL` + `KV_REST_API_TOKEN` (Upstash) — the JSON
+  store switches to Redis automatically. The JSON-file store remains the default for a VPS / Node server.
+- Videos play inline from Supabase Storage on the poster-wall rows and in the portfolio lightbox.
+  Prefer MP4 (H.264) for the widest browser support; the bucket accepts up to 50 MB per file.
 
 ## 📌 Maintenance & PR Status
 

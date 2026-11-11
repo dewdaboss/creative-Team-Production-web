@@ -3,10 +3,11 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Play, ChevronDown } from "lucide-react";
 import HeroPosterWall from "./HeroPosterWall";
+import type { GalleryItem } from "@/lib/types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export default function Hero() {
+export default function Hero({ heroItems = [] }: { heroItems?: GalleryItem[] }) {
   const reduce = useReducedMotion();
 
   return (
@@ -91,7 +92,7 @@ export default function Hero() {
               className="hero-arc pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[118%] w-[118%] -translate-x-1/2 -translate-y-1/2"
               aria-hidden
             />
-            <HeroPosterWall />
+            <HeroPosterWall items={heroItems} />
           </motion.div>
         </div>
       </div>

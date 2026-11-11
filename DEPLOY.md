@@ -48,25 +48,40 @@ Aapko milega: `https://creative-team-production.vercel.app` — HTTPS ke saath.
 
 ---
 
-## Step 3 — FREE photo/video uploads (Cloudinary) —optional but recommended
+## Step 3 — Supabase: photos & videos upload karo (recommended)
 
-Serverless par file upload disk me save nahi hota — Cloudinary free tier use karo:
+Is project me **Supabase** already configured hai: gallery table + public
+`gallery` storage bucket + row-level security. Naye deployment / naye project ke liye:
 
-1. [cloudinary.com](https://cloudinary.com) → free sign up
-2. Dashboard upar **Cloud Name** dikhega — copy karo
-3. Settings ⚙️ → **Upload** tab → **Upload presets** → **Add upload preset**
-   - Signing Mode: **Unsigned** zaroor select karo
-   - Save karke preset ka **name** copy karo
-4. Vercel env me add:
+1. [supabase.com](https://supabase.com) → free project banao (region: **Mumbai / ap-south-1**)
+2. **SQL Editor** → [`docs/supabase-setup.sql`](./docs/supabase-setup.sql) ka poora content paste karke **Run** karo
+   (table, RLS policies, updated_at trigger aur public bucket — sab idempotent hai)
+3. **Project Settings → API** se copy karo: `Project URL` aur `service_role` key
+4. Vercel → Project → **Settings → Environment Variables** me add karo (Production + Preview + Development):
 
    | Key | Value |
    |---|---|
-   | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | cloud name |
-   | `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | preset name |
+   | `SUPABASE_URL` | `https://<project-ref>.supabase.co` |
+   | `SUPABASE_SERVICE_ROLE_KEY` | service_role key (**secret** — `NEXT_PUBLIC_` mat lagao) |
+   | `SUPABASE_STORAGE_BUCKET` | `gallery` (optional) |
 
-5. Redeploy.
+5. **Deployments → Redeploy**
 
-✅ Ab `/admin → Gallery` se upload ki gayi photos seedha Cloudinary CDN par jaati hain — fast, free, permanent. (Local development me bina iske bhi uploads kaam karte hain — `public/uploads/`.)
+✅ Ab `/admin → Gallery` se upload ki gayi photos **aur videos** seedha Supabase Storage
+jaati hain aur website par turant live dikhti hain. Local development me bina Supabase ke bhi
+uploads `public/uploads/` me kaam karte hain.
+
+> **Note:** `service_role` key sirf server par rehti hai — uploads `/api/admin/upload` route se
+> hote hain, browser me key kabhi nahi jaati. File limits: image 15 MB, video 50 MB (MP4/WebM/MOV).
+
+### Cloudinary (optional fallback)
+
+Agar Supabase ke bina Cloudinary use karna ho:
+
+1. [cloudinary.com](https://cloudinary.com) → free sign up
+2. Dashboard ka **Cloud Name** copy karo
+3. Settings ⚙️ → **Upload** → **Upload presets** → **Add upload preset** → Signing Mode: **Unsigned**
+4. Vercel env me `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` + `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` add karke redeploy karo
 
 ---
 
@@ -88,6 +103,6 @@ Vercel → **Settings → Domains** → edit karo:
 ### Zaroori notes
 
 - **Har git push = auto-redeploy.** Arena me jo bhi change push hota hai, Vercel khud live karta hai.
-- Free tier limits (bohot hain aapke liye): Vercel 100GB bandwidth/mo, Upstash 10k requests/day, Cloudinary 25GB storage.
+- Free tier limits (bohot hain aapke liye): Vercel 100GB bandwidth/mo, Supabase 1GB database + 1GB storage (free), Upstash 10k requests/day.
 - Local development ke liye kuch change nahi karna — bina env ke bhi `npm run dev` perfectly chalta hai (file-based storage).
 - Agar baad me custom domain lo (optional, ~₹800/saal), wahi Settings → Domains se 2 min me jod dena.

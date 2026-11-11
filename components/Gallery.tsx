@@ -100,20 +100,33 @@ export default function Gallery({ items }: { items: GalleryItem[] }) {
                         : "aspect-square"
                   }`}
                 >
-                  <Image
-                    src={item.src}
-                    alt={item.title}
-                    fill
-                    sizes={isReel ? "(max-width:1024px) 50vw, 25vw" : feature ? "(max-width:1024px) 100vw, 50vw" : "(max-width:1024px) 50vw, 25vw"}
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
+                  {item.mediaType === "video" ? (
+                    <video
+                      src={item.src}
+                      muted
+                      loop
+                      autoPlay
+                      playsInline
+                      preload="metadata"
+                      aria-label={item.title}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <Image
+                      src={item.src}
+                      alt={item.title}
+                      fill
+                      sizes={isReel ? "(max-width:1024px) 50vw, 25vw" : feature ? "(max-width:1024px) 100vw, 50vw" : "(max-width:1024px) 50vw, 25vw"}
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-95" />
 
                   {/* type badge */}
                   <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-white/10 bg-black/55 px-2.5 py-1 backdrop-blur">
                     {isReel ? <Clapperboard size={11} className="text-neon" /> : <Camera size={11} className="text-neon" />}
                     <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/90">
-                      {isReel ? "Reel" : "Photo"}
+                      {item.mediaType === "video" ? "Video" : isReel ? "Reel" : "Photo"}
                     </span>
                   </div>
 
@@ -192,7 +205,19 @@ export default function Gallery({ items }: { items: GalleryItem[] }) {
                 <X size={18} />
               </button>
 
-              {active.type === "photo" || !active.embedUrl ? (
+              {active.mediaType === "video" ? (
+                <div className="w-full bg-black">
+                  <video
+                    src={active.src}
+                    controls
+                    autoPlay
+                    loop
+                    playsInline
+                    aria-label={active.title}
+                    className={`mx-auto w-full bg-black object-contain ${active.type === "reel" ? "aspect-[9/16] max-h-[72vh]" : "max-h-[72vh] aspect-video"}`}
+                  />
+                </div>
+              ) : active.type === "photo" || !active.embedUrl ? (
                 <div className={`relative w-full ${active.type === "reel" ? "aspect-[9/16] max-h-[72vh]" : "aspect-video"}`}>
                   <Image src={active.src} alt={active.title} fill className="object-cover" sizes="(max-width:768px) 100vw, 768px" />
                 </div>

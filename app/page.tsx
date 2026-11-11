@@ -13,32 +13,36 @@ import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
 import Backdrop from "@/components/Backdrop";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
-import { getGallery, getReviews } from "@/lib/store";
+import { getGalleryRowsSafe } from "@/lib/gallery";
+import { getReviews } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [galleryItems, reviews] = await Promise.all([getGallery(), getReviews()]);
+  // Gallery media (photos + videos) and row placement are managed from /admin
+  // and stored in Supabase. If the backend is briefly unreachable we still
+  // render the page with the built-in poster defaults.
+  const [rows, reviews] = await Promise.all([
+    getGalleryRowsSafe(),
+    getReviews().catch(() => []),
+  ]);
 
-  const visibleGallery = galleryItems
-    .filter((i) => i.visible)
-    .sort((a, b) => a.order - b.order);
   const visibleReviews = reviews.filter((r) => r.visible);
 
   return (
     <main className="relative">
       <Backdrop />
       <Navbar />
-      <Hero />
+      <Hero heroItems={rows.hero} />
       <Marquee />
-      <PosterStrip />
+      <PosterStrip rowA={rows["wall-a"]} rowB={rows["wall-b"]} />
       <Services />
       <About />
       <BookingSection />
       <CtaBand />
       <Process />
       <WhyUs />
-      <Gallery items={visibleGallery} />
+      <Gallery items={rows.gallery} />
       <Marquee reverse />
       <Reviews reviews={visibleReviews} />
       <Footer />

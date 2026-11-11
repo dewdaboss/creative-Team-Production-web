@@ -27,6 +27,11 @@ export interface Service {
   packages: PackageOption[];
 }
 
+/** Home-page rows where media can be placed from the admin panel. */
+export type GalleryRowKey = "hero" | "wall-a" | "wall-b" | "gallery";
+
+export type GalleryMediaType = "image" | "video";
+
 export interface GalleryItem {
   id: string;
   type: "photo" | "reel";
@@ -41,6 +46,10 @@ export interface GalleryItem {
   featured?: boolean;
   order: number;
   createdAt: string;
+  /** image (default) or an uploaded video file */
+  mediaType?: GalleryMediaType;
+  /** which home-page row this item renders in */
+  rowKey?: GalleryRowKey;
 }
 
 export interface Review {

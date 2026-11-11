@@ -1,11 +1,15 @@
 "use client";
 
 import { Clapperboard, Star, FolderCheck } from "lucide-react";
+import type { GalleryItem } from "@/lib/types";
 
 /**
  * HeroPosterWall — lightweight hero visual: fanned cinematic posters
  * (BTS / photoshoot / product ad) with a gentle GPU-only float.
  * No WebGL, self-contained styles, reduced-motion safe.
+ *
+ * Posters come from the Supabase-driven "Hero" row when the owner has added
+ * media in /admin; otherwise the built-in defaults are used.
  */
 
 type Poster = {
@@ -18,6 +22,7 @@ type Poster = {
   z: number;
   eager: boolean;
   rec?: boolean;
+  video?: boolean;
 };
 
 const POSTERS: Poster[] = [
@@ -54,13 +59,40 @@ const POSTERS: Poster[] = [
   },
 ];
 
+const SLOTS = [
+  { rotate: "-7deg", lift: "14px", dur: "7.2s", del: "0.5s", z: 1 },
+  { rotate: "0deg", lift: "-8px", dur: "8.4s", del: "0s", z: 3 },
+  { rotate: "7deg", lift: "16px", dur: "7.8s", del: "0.9s", z: 2 },
+];
+
 const CHIPS = [
   { icon: Clapperboard, label: "60+ Reels Cut", pos: "-left-2 top-3 sm:-left-8" },
   { icon: Star, label: "4.9 Rated", pos: "-right-2 top-[38%] sm:-right-8" },
   { icon: FolderCheck, label: "40+ Projects", pos: "left-0 -bottom-3 sm:left-4" },
 ] as const;
 
-export default function HeroPosterWall() {
+function postersFrom(items: GalleryItem[]): Poster[] {
+  const picked = items.slice(0, 3);
+  if (picked.length === 0) return POSTERS;
+  return picked.map((item, i) => {
+    const slot = SLOTS[i] ?? SLOTS[0];
+    return {
+      src: item.src,
+      label: item.category || item.title,
+      rotate: slot.rotate,
+      lift: slot.lift,
+      dur: slot.dur,
+      del: slot.del,
+      z: slot.z,
+      eager: i === 1,
+      rec: i === 1,
+      video: item.mediaType === "video",
+    };
+  });
+}
+
+export default function HeroPosterWall({ items = [] }: { items?: GalleryItem[] }) {
+  const posters = postersFrom(items);
   return (
     <div
       className="relative mx-auto w-full max-w-[26rem] select-none sm:max-w-md"
@@ -79,7 +111,7 @@ export default function HeroPosterWall() {
       />
 
       <div className="relative flex items-end justify-center gap-3 sm:gap-4" style={{ perspective: "1000px" }}>
-        {POSTERS.map((p) => (
+        {posters.map((p) => (
           <div
             key={p.src}
             className="relative w-[31%]"
@@ -89,15 +121,28 @@ export default function HeroPosterWall() {
               className="hpw-float relative overflow-hidden rounded-2xl border border-neon/25 bg-panel shadow-card"
               style={{ "--dur": p.dur, "--del": p.del } as React.CSSProperties}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p.src}
-                alt={`${p.label} poster — Creative Team Production`}
-                width={300}
-                height={400}
-                loading={p.eager ? "eager" : "lazy"}
-                className="aspect-[3/4] w-full object-cover"
-              />
+              {p.video ? (
+                <video
+                  src={p.src}
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  aria-label={`${p.label} — Creative Team Production`}
+                  className="aspect-[3/4] w-full object-cover"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={p.src}
+                  alt={`${p.label} poster — Creative Team Production`}
+                  width={300}
+                  height={400}
+                  loading={p.eager ? "eager" : "lazy"}
+                  className="aspect-[3/4] w-full object-cover"
+                />
+              )}
               <span
                 className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent"
                 aria-hidden
