@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Reveal from "./Reveal";
 import { POSTER_ROTATES, POSTER_TILTS } from "@/lib/gallery-rows";
+import { SHOOT_PHOTOS, WALL_A_SHOOT, WALL_B_SHOOT } from "@/lib/shoot-photos";
 import type { GalleryItem } from "@/lib/types";
 
 type Poster = {
@@ -15,21 +16,25 @@ type Poster = {
   video?: boolean;
 };
 
-const ROW_A: Poster[] = [
-  { src: "/images/gallery/wedding.jpg", title: "Sharma × Kapoor", cat: "Weddings", tilt: "-2.5deg", ry: "-8deg" },
-  { src: "/images/gallery/portrait.jpg", title: "Neon Editorial", cat: "Portraits", tilt: "1.8deg", ry: "6deg" },
-  { src: "/images/gallery/product-perfume.jpg", title: "Aura Campaign", cat: "Product", tilt: "-1.2deg", ry: "-5deg" },
-  { src: "/images/gallery/product-sneaker.jpg", title: "Velocity Drop", cat: "Sneaker", tilt: "2.2deg", ry: "8deg" },
-  { src: "/images/gallery/event.jpg", title: "Birthday Bash", cat: "Events", tilt: "-0.8deg", ry: "-4deg" },
-];
+const ROW_A: Poster[] = WALL_A_SHOOT.map((p, i) => ({
+  src: p.src,
+  title: p.title,
+  cat: p.category,
+  tilt: POSTER_TILTS[i % POSTER_TILTS.length],
+  ry: POSTER_ROTATES[i % POSTER_ROTATES.length],
+}));
 
 const ROW_B: Poster[] = [
   { src: "/images/gallery/reel-dance.jpg", title: "Motion Reel", cat: "Reels", tilt: "2deg", ry: "-7deg" },
   { src: "/images/gallery/reel-fashion.jpg", title: "Fashion Reel", cat: "Reels", tilt: "-1.5deg", ry: "5deg" },
   { src: "/images/gallery/reel-cooking.jpg", title: "Kitchen Fire", cat: "Reels", tilt: "1.2deg", ry: "-6deg" },
-  { src: "/images/gallery/food.jpg", title: "The Salt Room", cat: "Food", tilt: "-2deg", ry: "7deg" },
-  { src: "/images/gallery/brand.jpg", title: "CityPulse Audio", cat: "Brand", tilt: "0.8deg", ry: "-3deg" },
-  { src: "/images/gallery/bts.jpg", title: "On Set", cat: "BTS", tilt: "-1.8deg", ry: "6deg" },
+  ...WALL_B_SHOOT.map((p, i) => ({
+    src: p.src,
+    title: p.title,
+    cat: p.category,
+    tilt: POSTER_TILTS[(i + 3) % POSTER_TILTS.length],
+    ry: POSTER_ROTATES[(i + 3) % POSTER_ROTATES.length],
+  })),
 ];
 
 function postersFrom(items: GalleryItem[], offset = 0): Poster[] {
@@ -65,7 +70,7 @@ export default function PosterStrip({ rowA = [], rowB = [] }: { rowA?: GalleryIt
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-mute">
-            Every frame here is from an actual CTP shoot — weddings, products, fashion, food. Hover to flatten the wall, watch the Ken Burns drift.
+            Every frame here is from an actual CTP shoot — café portraits, lifestyle editorials and reels. Hover to flatten the wall, watch the Ken Burns drift.
           </p>
         </Reveal>
 

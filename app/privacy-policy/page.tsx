@@ -173,10 +173,11 @@ export default function PrivacyPolicyPage() {
       {/* 06 — Supabase Storage and Data Security */}
       <LegalSection id="storage-security" number="06" title="Supabase Storage and Data Security">
         <p>
-          Media and gallery data for this website are held in <strong>Supabase</strong> — a managed Postgres database and
+          Website data for this project is held in <strong>Supabase</strong> — a managed Postgres database and
           file-storage service. When our team uploads a photo or video from the admin panel, the file goes to a
-          Supabase Storage bucket and only the file URL, title, category and the row it appears in are saved in the
-          website database. Booking enquiries are kept in the website&apos;s own enquiry store (described below).
+          Supabase Storage bucket, and the file URL, title, category and the row it appears in are saved in the
+          website database. Booking enquiries, client reviews, the animated site counters and the aggregate visitor
+          count are also stored in Supabase database tables.
         </p>
         <p>How the Supabase setup is configured:</p>
         <LegalList>
@@ -188,7 +189,7 @@ export default function PrivacyPolicyPage() {
         </LegalList>
         <p>Other records are held as follows:</p>
         <LegalList>
-          <li>Booking enquiries are stored in the website&apos;s enquiry store — local files on a dedicated server, or a managed key-value database (Upstash Redis) when the site runs on serverless hosting.</li>
+          <li>Booking enquiries are stored in the Supabase <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-neon-soft">leads</code> table (with a local-file fallback when the site runs without Supabase).</li>
           <li>If lead automation is configured, a copy of each enquiry is also sent to a Google Sheet and to the owner&apos;s email inbox.</li>
           <li>If you message us on WhatsApp, the conversation sits in our WhatsApp chat history under WhatsApp&apos;s own policies.</li>
         </LegalList>
@@ -223,8 +224,8 @@ export default function PrivacyPolicyPage() {
             </thead>
             <tbody className="[&_td]:border-t [&_td]:border-line/60 [&_td]:px-4 [&_td]:py-3 [&_tr:first-child_td]:border-t-0">
               <tr><td className="font-semibold text-paper">Website hosting (Vercel)</td><td>Serves the website and processes basic technical logs.</td></tr>
-              <tr><td className="font-semibold text-paper">Supabase (database &amp; file storage)</td><td>Stores gallery photos and videos plus the information about which row of the site each item appears in.</td></tr>
-              <tr><td className="font-semibold text-paper">Managed database (Upstash Redis, if configured)</td><td>Stores booking enquiries and site counters on serverless hosting.</td></tr>
+              <tr><td className="font-semibold text-paper">Supabase (database &amp; file storage)</td><td>Stores gallery photos and videos, the row each item appears in, booking enquiries, reviews and aggregate site counters.</td></tr>
+              <tr><td className="font-semibold text-paper">Managed database (Upstash Redis, if configured)</td><td>Alternative persistence for site data on serverless hosting when Supabase is not configured.</td></tr>
               <tr><td className="font-semibold text-paper">Google Apps Script → Google Sheets &amp; email (if configured)</td><td>Sends new booking enquiries to the owner&apos;s sheet and inbox.</td></tr>
               <tr><td className="font-semibold text-paper">WhatsApp (wa.me links)</td><td>Lets you message us directly. WhatsApp processes the conversation under Meta&apos;s policies.</td></tr>
               <tr><td className="font-semibold text-paper">Instagram embeds &amp; profile links</td><td>Shows Instagram reels in the portfolio lightbox and links to our profile.</td></tr>
@@ -259,12 +260,12 @@ export default function PrivacyPolicyPage() {
       <LegalSection id="retention" number="09" title="Data Retention">
         <p>
           We keep booking enquiries for as long as they are needed to follow up, deliver the service you booked, keep
-          ordinary business records and meet legal or accounting duties. The website&apos;s enquiry store keeps only the
-          most recent 1,000 enquiries; older entries roll off automatically.
+          ordinary business records and meet legal or accounting duties. The admin dashboard shows the most recent
+          enquiries first, so older records stay available for follow-up without cluttering the inbox.
         </p>
         <LegalList>
           <li><strong>Gallery media</strong> (photos and videos we upload) stays in Supabase Storage until our team deletes it from the admin panel.</li>
-          <li><strong>Visitor counts</strong> are aggregate numbers only and are not linked to individual people.</li>
+          <li><strong>Visitor counts</strong> are aggregate numbers only (a daily and all-time total) and are not linked to individual people.</li>
           <li><strong>Admin session cookies</strong> expire after 12 hours.</li>
           <li><strong>Booking drafts</strong> stay in your own browser until you submit or clear them — we never receive them.</li>
         </LegalList>

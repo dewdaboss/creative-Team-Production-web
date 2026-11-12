@@ -2,6 +2,7 @@
 
 import { Clapperboard, Star, FolderCheck } from "lucide-react";
 import type { GalleryItem } from "@/lib/types";
+import { HERO_SHOOT } from "@/lib/shoot-photos";
 
 /**
  * HeroPosterWall — lightweight hero visual: fanned cinematic posters
@@ -27,8 +28,8 @@ type Poster = {
 
 const POSTERS: Poster[] = [
   {
-    src: "/images/gallery/bts.jpg",
-    label: "BTS · Cinema",
+    src: HERO_SHOOT[0].src,
+    label: HERO_SHOOT[0].category,
     rotate: "-7deg",
     lift: "14px",
     dur: "7.2s",
@@ -37,7 +38,7 @@ const POSTERS: Poster[] = [
     eager: false,
   },
   {
-    src: "/images/gallery/portrait.jpg",
+    src: HERO_SHOOT[1].src,
     label: "Photoshoot",
     rotate: "0deg",
     lift: "-8px",
@@ -48,8 +49,8 @@ const POSTERS: Poster[] = [
     rec: true,
   },
   {
-    src: "/images/gallery/product-perfume.jpg",
-    label: "Product Ad",
+    src: HERO_SHOOT[2].src,
+    label: HERO_SHOOT[2].category,
     rotate: "7deg",
     lift: "16px",
     dur: "7.8s",
@@ -97,7 +98,7 @@ export default function HeroPosterWall({ items = [] }: { items?: GalleryItem[] }
     <div
       className="relative mx-auto w-full max-w-[26rem] select-none sm:max-w-md"
       role="img"
-      aria-label="Creative Team poster wall — cinematic BTS, photoshoot and product ad posters"
+      aria-label="Creative Team poster wall — real photoshoot and lifestyle posters from our Indore studio"
     >
       <style>{`
         @keyframes hpwFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }

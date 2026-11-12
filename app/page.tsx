@@ -8,12 +8,16 @@ import Process from "@/components/Process";
 import WhyUs from "@/components/WhyUs";
 import BookingSection from "@/components/BookingSection";
 import CtaBand from "@/components/CtaBand";
-import Gallery from "@/components/Gallery";
+import Portfolio from "@/components/Portfolio";
 import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
 import Backdrop from "@/components/Backdrop";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { getGalleryRowsSafe } from "@/lib/gallery";
+import { isCoupleShoot, isPreWedding } from "@/lib/prewedding";
+import { isProductShoot } from "@/lib/product-photos";
+import { isMenShoot } from "@/lib/men-shoots";
+import { isWomenShoot } from "@/lib/women-shoots";
 import { getReviews } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +33,32 @@ export default async function HomePage() {
 
   const visibleReviews = reviews.filter((r) => r.visible);
 
+  // Media uploaded to the Portfolio row is grouped by category so the single
+  // Portfolio section (tabs) can show each shoot type in the right tab.
+  const isCouple = (category?: string) => isPreWedding(category) || isCoupleShoot(category);
+
+  const coupleItems = rows.gallery.filter((item) => isCouple(item.category));
+  const productShootItems = rows.gallery.filter(
+    (item) => isProductShoot(item.category) && !isCouple(item.category)
+  );
+  const menShootItems = rows.gallery.filter(
+    (item) => isMenShoot(item.category) && !isCouple(item.category) && !isProductShoot(item.category)
+  );
+  const womenShootItems = rows.gallery.filter(
+    (item) =>
+      isWomenShoot(item.category) &&
+      !isCouple(item.category) &&
+      !isProductShoot(item.category) &&
+      !isMenShoot(item.category)
+  );
+  const portfolioItems = rows.gallery.filter(
+    (item) =>
+      !isCouple(item.category) &&
+      !isProductShoot(item.category) &&
+      !isMenShoot(item.category) &&
+      !isWomenShoot(item.category)
+  );
+
   return (
     <main className="relative">
       <Backdrop />
@@ -42,7 +72,13 @@ export default async function HomePage() {
       <CtaBand />
       <Process />
       <WhyUs />
-      <Gallery items={rows.gallery} />
+      <Portfolio
+        coupleItems={coupleItems}
+        girlsItems={womenShootItems}
+        boysItems={menShootItems}
+        productItems={productShootItems}
+        portraitItems={portfolioItems}
+      />
       <Marquee reverse />
       <Reviews reviews={visibleReviews} />
       <Footer />

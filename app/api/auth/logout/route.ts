@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { COOKIE_NAME } from "@/lib/auth";
+import { COOKIE_NAME, sessionCookieOptions } from "@/lib/auth";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-export async function POST() {
-  const store = await cookies();
-  store.set(COOKIE_NAME, "", { httpOnly: true, path: "/", maxAge: 0 });
-  return NextResponse.json({ ok: true });
+export async function POST(req: Request) {
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(COOKIE_NAME, "", { ...sessionCookieOptions(req, 0), expires: new Date(0) });
+  return res;
 }

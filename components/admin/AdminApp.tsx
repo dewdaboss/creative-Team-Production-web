@@ -65,10 +65,72 @@ interface Lead {
   automation?: { webhook: string };
 }
 
+/**
+ * Session token is kept in localStorage as well as the HttpOnly cookie.
+ * The Bearer header keeps the dashboard signed in when the site is embedded
+ * in a cross-site iframe (preview environments block third-party cookies).
+ */
+const TOKEN_KEY = "ctp_admin_token";
+
+/**
+ * In-memory copy of the session token. Some embedded previews run the page in
+ * a sandboxed iframe where cookies AND localStorage are blocked — keeping the
+ * token in module memory is the only thing that survives between requests, so
+ * the dashboard stays signed in for the current page view.
+ */
+let memoryToken = "";
+
+function readToken(): string {
+  if (memoryToken) return memoryToken;
+  try {
+    const stored = window.localStorage.getItem(TOKEN_KEY);
+    if (stored) {
+      memoryToken = stored;
+      return stored;
+    }
+  } catch {
+    /* storage blocked */
+  }
+  try {
+    const session = window.sessionStorage.getItem(TOKEN_KEY);
+    if (session) {
+      memoryToken = session;
+      return session;
+    }
+  } catch {
+    /* storage blocked */
+  }
+  return "";
+}
+
+function writeToken(token: string) {
+  memoryToken = token;
+  try {
+    if (token) window.localStorage.setItem(TOKEN_KEY, token);
+    else window.localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    /* storage blocked — memory copy still works */
+  }
+  try {
+    if (token) window.sessionStorage.setItem(TOKEN_KEY, token);
+    else window.sessionStorage.removeItem(TOKEN_KEY);
+  } catch {
+    /* storage blocked — memory copy still works */
+  }
+}
+
+function authHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  const token = readToken();
+  return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
+}
+
 async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
-    headers: init?.body instanceof FormData ? undefined : { "Content-Type": "application/json" },
+    headers:
+      init?.body instanceof FormData
+        ? authHeaders()
+        : authHeaders({ "Content-Type": "application/json" }),
   });
   if (res.status === 401) throw new Error("UNAUTHORIZED");
   const data = await res.json().catch(() => ({}));
@@ -139,7 +201,10 @@ export default function AdminApp() {
   }, []);
 
   const handle401 = useCallback((e: unknown) => {
-    if (e instanceof Error && e.message === "UNAUTHORIZED") setAuth("login");
+    if (e instanceof Error && e.message === "UNAUTHORIZED") {
+      writeToken("");
+      setAuth("login");
+    }
   }, []);
 
   if (auth === "loading") {
@@ -174,7 +239,8 @@ export default function AdminApp() {
           </a>
           <button
             onClick={async () => {
-              await fetch("/api/auth/logout", { method: "POST" });
+              await fetch("/api/auth/logout", { method: "POST", headers: authHeaders() });
+              writeToken("");
               setAuth("login");
             }}
             className="flex items-center gap-1.5 rounded-xl border border-red-500/30 px-3.5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-red-300 transition-colors hover:bg-red-500/10"
@@ -217,7 +283,20 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
     setBusy(true);
     setError("");
     try {
-      await api("/api/auth/login", { method: "POST", body: JSON.stringify({ user, pass }) });
+      const data = await api<{ token?: string }>("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ user, pass }),
+      });
+      if (data.token) writeToken(data.token);
+
+      // Confirm the session really stuck before entering the dashboard —
+      // otherwise the user would bounce back with no explanation.
+      const check = await api<{ authenticated: boolean }>("/api/auth/me");
+      if (!check.authenticated) {
+        throw new Error(
+          "Login worked but the session could not be saved. Allow cookies/site data for this preview (or open it in a normal tab) and try again."
+        );
+      }
       onSuccess();
     } catch (err) {
       setError((err as Error).message);
@@ -366,7 +445,19 @@ function LeadsTab({ onUnauthorized, onCount }: { onUnauthorized: (e: unknown) =>
 /* gallery                                                             */
 /* ------------------------------------------------------------------ */
 
-const CATEGORIES = ["Reels", "Product", "Portraits", "Weddings & Events", "Brand Campaigns", "Food & Hospitality", "Behind The Scenes"];
+const CATEGORIES = [
+  "Reels",
+  "Product",
+  "Product Shoots",
+  "Portraits",
+  "Pre-Wedding",
+  "Men's Photo Shoot",
+  "Women's Photo Shoot",
+  "Weddings & Events",
+  "Brand Campaigns",
+  "Food & Hospitality",
+  "Behind The Scenes",
+];
 
 type GalleryForm = {
   type: "photo" | "reel";
@@ -443,7 +534,11 @@ function GalleryTab({ onUnauthorized }: { onUnauthorized: (e: unknown) => void }
       const isVideo = file.type.startsWith("video/");
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: fd,
+        headers: authHeaders(),
+      });
       const data = (await res.json().catch(() => ({}))) as {
         url?: string;
         path?: string;

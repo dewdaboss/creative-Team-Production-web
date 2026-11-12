@@ -80,3 +80,76 @@ on conflict (id) do update
 -- select 'photo', 'Sharma × Kapoor Wedding', 'Weddings & Events', 'image',
 --        '/images/gallery/wedding.jpg', 'gallery', 1
 -- where not exists (select 1 from public.gallery_items);
+
+-- 6. Booking leads ------------------------------------------------------
+-- The full enquiry is kept in `payload` (jsonb) so the booking form can grow
+-- without a migration; `created_at` is indexed for the admin inbox.
+create table if not exists public.leads (
+  id text primary key,
+  created_at timestamptz not null default now(),
+  payload jsonb not null
+);
+create index if not exists leads_created_idx on public.leads (created_at desc);
+alter table public.leads enable row level security;
+grant all on public.leads to service_role;
+
+-- 7. Reviews ------------------------------------------------------------
+create table if not exists public.reviews (
+  id text primary key,
+  name text not null,
+  rating integer not null check (rating between 1 and 5),
+  text text not null,
+  service text,
+  date timestamptz not null default now(),
+  visible boolean not null default true
+);
+alter table public.reviews enable row level security;
+grant all on public.reviews to service_role;
+
+-- 8. Animated site counters (single row) --------------------------------
+create table if not exists public.site_stats (
+  id integer primary key default 1,
+  instagram_followers integer not null default 0,
+  followers_today integer not null default 0,
+  projects_delivered integer not null default 0,
+  happy_clients integer not null default 0,
+  reels_produced integer not null default 0,
+  updated_at timestamptz not null default now(),
+  constraint site_stats_single_row check (id = 1)
+);
+alter table public.site_stats enable row level security;
+grant all on public.site_stats to service_role;
+
+-- 9. Visitor counter (single row) ---------------------------------------
+create table if not exists public.visitor_counters (
+  id integer primary key default 1,
+  total bigint not null default 0,
+  today integer not null default 0,
+  day text not null default '',
+  constraint visitor_counters_single_row check (id = 1)
+);
+alter table public.visitor_counters enable row level security;
+grant all on public.visitor_counters to service_role;
+
+-- Atomic +1 so concurrent visitors never overwrite each other's counts
+create or replace function public.increment_visitor(p_day text)
+returns public.visitor_counters
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare r public.visitor_counters;
+begin
+  insert into public.visitor_counters (id, total, today, day)
+  values (1, 1, 1, p_day)
+  on conflict (id) do update set
+    total = public.visitor_counters.total + 1,
+    today = case when public.visitor_counters.day = p_day then public.visitor_counters.today + 1 else 1 end,
+    day = p_day
+  returning * into r;
+  return r;
+end;
+$$;
+
+revoke all on function public.increment_visitor(text) from public, anon, authenticated;
+grant execute on function public.increment_visitor(text) to service_role;
