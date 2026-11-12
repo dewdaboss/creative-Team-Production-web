@@ -16,8 +16,8 @@ export default function CtaBand() {
     <section ref={ref} className="relative my-10 overflow-hidden">
       <motion.div style={reduce ? undefined : { y }} className="absolute inset-0 -inset-y-16">
         <Image
-          src="/images/hero-camera.jpg"
-          alt="Cinematographer with a cinema camera rig on set"
+          src="/images/gallery/shoot-01.jpg"
+          alt="Café lifestyle portrait shot by Creative Team Production"
           fill
           className="object-cover"
           sizes="100vw"

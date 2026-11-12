@@ -22,8 +22,8 @@ export default function About() {
           <Reveal className="h-full">
             <div className="relative h-full min-h-[19rem] overflow-hidden rounded-2xl border border-neon/20 sm:min-h-[24rem]">
               <Image
-                src="/images/gallery/bts.jpg"
-                alt="Creative Team Production crew working on a film set in Indore"
+                src="/images/gallery/shoot-02.jpg"
+                alt="Lifestyle portrait shot by Creative Team Production in Indore"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 45vw"
