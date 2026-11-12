@@ -87,3 +87,15 @@ npm run build      # production build
 npm start          # production server
 npm run typecheck  # TypeScript check
 ```
+
+---
+
+## 7. Real shoot photos (café portrait series)
+
+- 10 asli photos `public/images/gallery/shoot-01.jpg` … `shoot-10.jpg` me hain
+  (web ke liye optimise ki hui: max 900px, progressive JPEG, 50–115 KB).
+- Ye photos hero poster wall, poster wall, portfolio grid, About aur CTA band me
+  lag chuki hain (`lib/shoot-photos.ts` ek hi jagah se sab jagah use hota hai).
+- Agar aap purane Supabase database par hain jisme placeholder artwork rows hain,
+  to deploy ke baad `docs/shoot-photos.sql` ek baar SQL Editor me run karein —
+  isse database rows bhi inhi photos par shift ho jayengi.
