@@ -175,3 +175,27 @@ Ab home page par photo sections alag-alag nahi hain. **Ek hi "Portfolio" section
 - Admin: photos upload karte waqt wahi categories chalengi —
   **Pre-Wedding / Couple Shoot**, **Women's Photo Shoot**, **Men's Photo Shoot**,
   **Product Shoots**, ya **Portraits**.
+
+---
+
+## 13. Home page order, /about page aur mobile polish (12 Nov)
+
+**Naya home flow (chhoti, professional):**
+Hero (neeche section chips) → Portfolio (tabs) → Booking / Pricing → CTA band →
+Services → Poster wall → About teaser → Marquee → Reviews → Footer.
+
+**Long content ab /about page par hai** (home par scroll karte waqt nahi dikhta):
+- `/about` par: Our story, Mission, Vision, "How we work" (process) aur
+  "Eight reasons brands stick with us".
+- Home par chhota **About teaser** (`components/AboutTeaser.tsx`) hai jisme
+  "Full story, mission & why brands choose us →" link /about par jaata hai.
+- Footer me **About Us** link bhi /about par set hai.
+
+**Mobile polish (smooth feel):**
+- `QuickNav` — hero ke neeche Portfolio/Booking/Services/About/Reviews/Contact
+  chips, mobile par swipe hote hain, click par smooth scroll.
+- Portfolio ke category tabs mobile par navbar ke neeche **sticky** rehte hain.
+- Hero height `100svh` (phone browser bars ke saath sahi), press feedback
+  (`active:scale`), `touch-action: manipulation`, tap highlight off,
+  `scroll-margin-top` sab sections par — anchor click par heading cut nahi hoti.
+- Horizontal rails par momentum scroll + `overscroll-behavior` (iOS/Android smooth).

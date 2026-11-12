@@ -320,3 +320,49 @@ select.input option {
 @media (prefers-reduced-motion: reduce) {
   .grain-overlay, .hero-arc, .animate-kenburns { animation: none !important; }
 }
+
+/* ---------- mobile polish + smoother interaction ---------- */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a,
+button,
+[role="button"],
+summary {
+  touch-action: manipulation;
+}
+
+/* press feedback needs to feel instant on phones */
+.btn-neon,
+.btn-ghost {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease,
+    border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+}
+.btn-neon:active,
+.btn-ghost:active {
+  transform: scale(0.975);
+}
+
+/* anchors shouldn't hide behind the fixed navbar */
+section[id],
+footer[id] {
+  scroll-margin-top: 84px;
+}
+
+/* horizontal rails: momentum + snapping stays smooth on iOS/Android */
+.scrollbar-none {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+@media (hover: none) {
+  /* keep decorative motion calm on touch devices = smoother scrolling */
+  .animate-kenburns {
+    animation-duration: 32s !important;
+  }
+  .poster-plane-a:hover,
+  .poster-plane-b:hover {
+    transform: none;
+  }
+}

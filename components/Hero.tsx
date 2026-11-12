@@ -11,8 +11,8 @@ export default function Hero({ heroItems = [] }: { heroItems?: GalleryItem[] }) 
   const reduce = useReducedMotion();
 
   return (
-    <section id="top" className="relative flex min-h-screen flex-col overflow-hidden">
-      <div className="mx-auto grid w-full max-w-7xl flex-1 items-center gap-14 px-5 pb-16 pt-32 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:pt-24">
+    <section id="top" className="relative flex min-h-[100svh] flex-col overflow-hidden">
+      <div className="mx-auto grid w-full max-w-7xl flex-1 items-center gap-12 px-5 pb-14 pt-28 sm:gap-14 sm:px-8 sm:pb-16 sm:pt-32 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:pt-24">
         <div className="relative z-10 text-center lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 24 }}

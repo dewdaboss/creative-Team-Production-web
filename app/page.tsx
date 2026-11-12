@@ -1,11 +1,10 @@
 import Navbar from "@/components/Navbar";
+import QuickNav from "@/components/QuickNav";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import PosterStrip from "@/components/PosterStrip";
 import Services from "@/components/Services";
-import About from "@/components/About";
-import Process from "@/components/Process";
-import WhyUs from "@/components/WhyUs";
+import AboutTeaser from "@/components/AboutTeaser";
 import BookingSection from "@/components/BookingSection";
 import CtaBand from "@/components/CtaBand";
 import Portfolio from "@/components/Portfolio";
@@ -64,14 +63,10 @@ export default async function HomePage() {
       <Backdrop />
       <Navbar />
       <Hero heroItems={rows.hero} />
+      {/* section shortcuts, right under the hero heading */}
+      <QuickNav />
       <Marquee />
-      <PosterStrip rowA={rows["wall-a"]} rowB={rows["wall-b"]} />
-      <Services />
-      <About />
-      <BookingSection />
-      <CtaBand />
-      <Process />
-      <WhyUs />
+      {/* work first, then pricing/booking — the order a client actually shops in */}
       <Portfolio
         coupleItems={coupleItems}
         girlsItems={womenShootItems}
@@ -79,6 +74,12 @@ export default async function HomePage() {
         productItems={productShootItems}
         portraitItems={portfolioItems}
       />
+      <BookingSection />
+      <CtaBand />
+      <Services />
+      <PosterStrip rowA={rows["wall-a"]} rowB={rows["wall-b"]} />
+      {/* long story / mission / vision / why-us live on /about */}
+      <AboutTeaser />
       <Marquee reverse />
       <Reviews reviews={visibleReviews} />
       <Footer />

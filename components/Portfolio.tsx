@@ -149,8 +149,8 @@ export default function Portfolio({
   const current = active === null ? null : visible[active];
 
   return (
-    <section id="portfolio" className="relative scroll-mt-16 overflow-hidden py-20 sm:py-24">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
+    <section id="portfolio" className="relative scroll-mt-20 py-16 sm:py-24">
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute left-1/2 top-0 h-[26rem] w-[46rem] -translate-x-1/2 rounded-full bg-neon/10 blur-[110px]" />
         <div className="absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-neon/[0.06] blur-[90px]" />
       </div>
@@ -166,9 +166,9 @@ export default function Portfolio({
           description="Couple, girls, boys, product and portrait shoots — pick a category to see the work instead of scrolling the whole archive."
         />
 
-        {/* category tabs */}
-        <Reveal className="mt-8">
-          <div className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0">
+        {/* category tabs — sticky under the navbar on phones */}
+        <div className="sticky top-[72px] z-20 -mx-5 mt-6 bg-void/85 px-5 py-2.5 backdrop-blur-xl sm:static sm:mx-0 sm:mt-8 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
+          <div className="scrollbar-none flex gap-2 overflow-x-auto pb-0.5 sm:flex-wrap sm:justify-center">
             {TABS.map((t) => {
               const isActive = tab === t.id;
               return (
@@ -200,7 +200,7 @@ export default function Portfolio({
               );
             })}
           </div>
-        </Reveal>
+        </div>
 
         {/* grid */}
         <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">

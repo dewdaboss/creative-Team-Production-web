@@ -29,6 +29,7 @@ const SOCIALS = [
 
 const EXPLORE_LINKS = [
   ["Home", "#top"],
+  ["About Us", "/about"],
   ["Services", "#services"],
   ["Gallery", "#portfolio"],
   ["Book", "#booking"],
@@ -83,7 +84,7 @@ export default function Footer() {
               {EXPLORE_LINKS.map(([label, href]) => (
                 <li key={label}>
                   <a
-                    href={homeHref(href)}
+                    href={href.startsWith("/") ? href : homeHref(href)}
                     className="group inline-flex items-center gap-1.5 text-sm text-mute transition-colors hover:text-neon"
                   >
                     {label}
