@@ -99,3 +99,15 @@ npm run typecheck  # TypeScript check
 - Agar aap purane Supabase database par hain jisme placeholder artwork rows hain,
   to deploy ke baad `docs/shoot-photos.sql` ek baar SQL Editor me run karein —
   isse database rows bhi inhi photos par shift ho jayengi.
+
+---
+
+## 8. Pre-Wedding section
+
+- 15 pre-wedding photos: `public/images/gallery/prewed-01.jpg` … `prewed-15.jpg`
+  (760px wide, progressive JPEG).
+- Home page par apna alag "Pre-Wedding" section hai (nav me bhi link) — swipe/scroll
+  rail, tap par full-screen lightbox, aur seedha "Book a pre-wedding shoot" CTA.
+- Naye pre-wedding photos add karne ke liye `/admin` → Gallery → Row: **Portfolio**,
+  Category: **Pre-Wedding** chunein. Wo photos automatic is section me chali jayengi
+  (normal portfolio grid me duplicate nahi hongi).

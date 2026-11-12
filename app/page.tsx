@@ -9,11 +9,13 @@ import WhyUs from "@/components/WhyUs";
 import BookingSection from "@/components/BookingSection";
 import CtaBand from "@/components/CtaBand";
 import Gallery from "@/components/Gallery";
+import PreWedding from "@/components/PreWedding";
 import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
 import Backdrop from "@/components/Backdrop";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { getGalleryRowsSafe } from "@/lib/gallery";
+import { isPreWedding } from "@/lib/prewedding";
 import { getReviews } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +31,11 @@ export default async function HomePage() {
 
   const visibleReviews = reviews.filter((r) => r.visible);
 
+  // Media uploaded to the Portfolio row with the "Pre-Wedding" category is
+  // shown in its own showcase section instead of the generic grid.
+  const preWeddingItems = rows.gallery.filter((item) => isPreWedding(item.category));
+  const portfolioItems = rows.gallery.filter((item) => !isPreWedding(item.category));
+
   return (
     <main className="relative">
       <Backdrop />
@@ -42,7 +49,8 @@ export default async function HomePage() {
       <CtaBand />
       <Process />
       <WhyUs />
-      <Gallery items={rows.gallery} />
+      <Gallery items={portfolioItems} />
+      <PreWedding items={preWeddingItems} />
       <Marquee reverse />
       <Reviews reviews={visibleReviews} />
       <Footer />
