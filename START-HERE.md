@@ -149,3 +149,29 @@ npm run typecheck  # TypeScript check
 - Naye photos: `/admin` → Row: **Portfolio**, Category: **Women's Photo Shoot**.
 - Sabhi showcase sections (Pre-Wedding, Men's, Women's) ek hi shared component
   `components/ShootRail.tsx` se bante hain — design same rehta hai, photos alag.
+
+---
+
+## 12. Portfolio tabs (naya structure — 12 Nov)
+
+Ab home page par photo sections alag-alag nahi hain. **Ek hi "Portfolio" section**
+(`#portfolio`) hai jisme category tabs hain:
+
+| Tab | Content |
+|---|---|
+| All Work | 8 chuni hui photos (couple 2 · girls 2 · boys 2 · products 2) |
+| Couple | 15 pre-wedding/couple frames |
+| Girls | 12 women's photo shoot frames |
+| Boys | 13 men's photo shoot frames |
+| Products | 12 product/jewellery frames |
+| Portraits | 10 café portrait frames + admin uploads |
+
+- Har tab par pehle **8 photos** dikhti hain, neeche **"Show all N photos"** button
+  se baaki khulti hain — page chhota aur professional rehta hai.
+- Tap par full-screen lightbox (← → keys, Esc close), mobile par chips scroll hote hain.
+- Purane alag sections (`#pre-wedding`, `#men-shoots`, `#women-shoots`,
+  `#product-shoots`) hata diye gaye hain; content ka kuch bhi delete nahi hua —
+  sab tabs ke andar hai. Component: `components/Portfolio.tsx`.
+- Admin: photos upload karte waqt wahi categories chalengi —
+  **Pre-Wedding / Couple Shoot**, **Women's Photo Shoot**, **Men's Photo Shoot**,
+  **Product Shoots**, ya **Portraits**.

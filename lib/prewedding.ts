@@ -39,3 +39,9 @@ export const PREWEDDING_CATEGORY = "Pre-Wedding";
 /** Matches "Pre-Wedding", "pre wedding", "PreWedding" … */
 export const isPreWedding = (category?: string) =>
   (category ?? "").toLowerCase().replace(/[\s-]/g, "").includes("prewedding");
+
+/** Matches "Couple Shoot", "couple", "Pre-Wedding Couple" … */
+export const isCoupleShoot = (category?: string) => {
+  const key = (category ?? "").toLowerCase().replace(/[\s'’-]/g, "");
+  return key.includes("couple");
+};
