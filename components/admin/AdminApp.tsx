@@ -445,7 +445,17 @@ function LeadsTab({ onUnauthorized, onCount }: { onUnauthorized: (e: unknown) =>
 /* gallery                                                             */
 /* ------------------------------------------------------------------ */
 
-const CATEGORIES = ["Reels", "Product", "Portraits", "Pre-Wedding", "Weddings & Events", "Brand Campaigns", "Food & Hospitality", "Behind The Scenes"];
+const CATEGORIES = [
+  "Reels",
+  "Product",
+  "Product Shoots",
+  "Portraits",
+  "Pre-Wedding",
+  "Weddings & Events",
+  "Brand Campaigns",
+  "Food & Hospitality",
+  "Behind The Scenes",
+];
 
 type GalleryForm = {
   type: "photo" | "reel";

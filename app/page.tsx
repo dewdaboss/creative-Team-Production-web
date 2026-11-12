@@ -10,12 +10,14 @@ import BookingSection from "@/components/BookingSection";
 import CtaBand from "@/components/CtaBand";
 import Gallery from "@/components/Gallery";
 import PreWedding from "@/components/PreWedding";
+import ProductShoots from "@/components/ProductShoots";
 import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
 import Backdrop from "@/components/Backdrop";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { getGalleryRowsSafe } from "@/lib/gallery";
 import { isPreWedding } from "@/lib/prewedding";
+import { isProductShoot } from "@/lib/product-photos";
 import { getReviews } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +36,12 @@ export default async function HomePage() {
   // Media uploaded to the Portfolio row with the "Pre-Wedding" category is
   // shown in its own showcase section instead of the generic grid.
   const preWeddingItems = rows.gallery.filter((item) => isPreWedding(item.category));
-  const portfolioItems = rows.gallery.filter((item) => !isPreWedding(item.category));
+  const productShootItems = rows.gallery.filter(
+    (item) => isProductShoot(item.category) && !isPreWedding(item.category)
+  );
+  const portfolioItems = rows.gallery.filter(
+    (item) => !isPreWedding(item.category) && !isProductShoot(item.category)
+  );
 
   return (
     <main className="relative">
@@ -51,6 +58,7 @@ export default async function HomePage() {
       <WhyUs />
       <Gallery items={portfolioItems} />
       <PreWedding items={preWeddingItems} />
+      <ProductShoots items={productShootItems} />
       <Marquee reverse />
       <Reviews reviews={visibleReviews} />
       <Footer />

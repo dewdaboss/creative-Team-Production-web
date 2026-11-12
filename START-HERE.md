@@ -111,3 +111,13 @@ npm run typecheck  # TypeScript check
 - Naye pre-wedding photos add karne ke liye `/admin` → Gallery → Row: **Portfolio**,
   Category: **Pre-Wedding** chunein. Wo photos automatic is section me chali jayengi
   (normal portfolio grid me duplicate nahi hongi).
+
+---
+
+## 9. Product Shoots section
+
+- 12 product photos (skincare + jewellery): `public/images/gallery/product-01.jpg` … `product-12.jpg`.
+- Home page par alag "Product Shoots" grid section — 2/3/4 column responsive,
+  tap par full-screen lightbox, "Book a product shoot" + WhatsApp CTA.
+- Naye product photos: `/admin` → Row: **Portfolio**, Category: **Product Shoots**
+  chunein → wo photos automatic is section me aayengi (portfolio grid me duplicate nahi).
