@@ -121,3 +121,18 @@ npm run typecheck  # TypeScript check
   tap par full-screen lightbox, "Book a product shoot" + WhatsApp CTA.
 - Naye product photos: `/admin` → Row: **Portfolio**, Category: **Product Shoots**
   chunein → wo photos automatic is section me aayengi (portfolio grid me duplicate nahi).
+
+---
+
+## 10. Men's Photo Shoot section (professional male portfolio)
+
+- 13 male portfolio photos: `public/images/gallery/men-01.jpg` … `men-13.jpg`
+  (max 820×1100, progressive JPEG, ~35–125 KB each).
+- Home page par alag **"Men's Photo Shoot"** section (`#men-shoots`) — ek hi
+  carousel rail me saari 13 photos, swipe/arrows, tap par full-screen lightbox,
+  aur "Book a portfolio shoot" + WhatsApp CTA.
+- Har section ki photos alag hain — ye male-portfolio photos hero, café,
+  pre-wedding ya product sections me repeat nahi hoti.
+- Naye male-portfolio photos add karne ke liye `/admin` → Row: **Portfolio**,
+  Category: **Men's Photo Shoot** chunein. Wo photos automatic is section me
+  jayengi (normal portfolio grid me duplicate nahi hongi).
