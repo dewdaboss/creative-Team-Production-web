@@ -136,3 +136,16 @@ npm run typecheck  # TypeScript check
 - Naye male-portfolio photos add karne ke liye `/admin` → Row: **Portfolio**,
   Category: **Men's Photo Shoot** chunein. Wo photos automatic is section me
   jayengi (normal portfolio grid me duplicate nahi hongi).
+
+---
+
+## 11. Women's Photo Shoot section (professional female portfolio)
+
+- 12 female portfolio photos: `public/images/gallery/women-01.jpg` … `women-12.jpg`
+  (max 820×1100, progressive JPEG, ~70–180 KB each).
+- Home page par alag **"Women's Photo Shoot"** section (`#women-shoots`) — ek hi
+  carousel rail me saari 12 photos, swipe/arrows, tap par full-screen lightbox,
+  "Book a portfolio shoot" + WhatsApp CTA.
+- Naye photos: `/admin` → Row: **Portfolio**, Category: **Women's Photo Shoot**.
+- Sabhi showcase sections (Pre-Wedding, Men's, Women's) ek hi shared component
+  `components/ShootRail.tsx` se bante hain — design same rehta hai, photos alag.

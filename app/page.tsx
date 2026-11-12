@@ -11,6 +11,7 @@ import CtaBand from "@/components/CtaBand";
 import Gallery from "@/components/Gallery";
 import PreWedding from "@/components/PreWedding";
 import MenShoots from "@/components/MenShoots";
+import WomenShoots from "@/components/WomenShoots";
 import ProductShoots from "@/components/ProductShoots";
 import Reviews from "@/components/Reviews";
 import Footer from "@/components/Footer";
@@ -20,6 +21,7 @@ import { getGalleryRowsSafe } from "@/lib/gallery";
 import { isPreWedding } from "@/lib/prewedding";
 import { isProductShoot } from "@/lib/product-photos";
 import { isMenShoot } from "@/lib/men-shoots";
+import { isWomenShoot } from "@/lib/women-shoots";
 import { getReviews } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
@@ -44,9 +46,19 @@ export default async function HomePage() {
   const menShootItems = rows.gallery.filter(
     (item) => isMenShoot(item.category) && !isPreWedding(item.category) && !isProductShoot(item.category)
   );
+  const womenShootItems = rows.gallery.filter(
+    (item) =>
+      isWomenShoot(item.category) &&
+      !isPreWedding(item.category) &&
+      !isProductShoot(item.category) &&
+      !isMenShoot(item.category)
+  );
   const portfolioItems = rows.gallery.filter(
     (item) =>
-      !isPreWedding(item.category) && !isProductShoot(item.category) && !isMenShoot(item.category)
+      !isPreWedding(item.category) &&
+      !isProductShoot(item.category) &&
+      !isMenShoot(item.category) &&
+      !isWomenShoot(item.category)
   );
 
   return (
@@ -65,6 +77,7 @@ export default async function HomePage() {
       <Gallery items={portfolioItems} />
       <PreWedding items={preWeddingItems} />
       <MenShoots items={menShootItems} />
+      <WomenShoots items={womenShootItems} />
       <ProductShoots items={productShootItems} />
       <Marquee reverse />
       <Reviews reviews={visibleReviews} />

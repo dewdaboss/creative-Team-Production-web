@@ -452,6 +452,7 @@ const CATEGORIES = [
   "Portraits",
   "Pre-Wedding",
   "Men's Photo Shoot",
+  "Women's Photo Shoot",
   "Weddings & Events",
   "Brand Campaigns",
   "Food & Hospitality",
