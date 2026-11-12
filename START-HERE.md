@@ -199,3 +199,18 @@ Services → Poster wall → About teaser → Marquee → Reviews → Footer.
   (`active:scale`), `touch-action: manipulation`, tap highlight off,
   `scroll-margin-top` sab sections par — anchor click par heading cut nahi hoti.
 - Horizontal rails par momentum scroll + `overscroll-behavior` (iOS/Android smooth).
+
+---
+
+## 14. About ab in-page panel me khulta hai (12 Nov)
+
+- Navbar ka **About** link aur home ka **"Full story, mission & why brands choose us"**
+  ab page change nahi karte — usi page ke upar ek **panel (overlay)** khulta hai.
+- Panel me 4 tabs: **Our story · Mission & Vision · Why us (8 reasons) · How we work (8 steps)**
+  — sab kuch ek jagah, neeche "Book a shoot" aur WhatsApp CTA.
+- Mobile par panel neeche se slide hoke full width khulta hai, desktop par centered
+  card; backdrop tap, X button ya Esc se band hota hai; background scroll lock.
+- `/about` page bhi maujood hai (direct link / SEO ke liye) — panel ke footer me
+  chhota "Open as page" link hai, aur home teaser me bhi.
+- Code: `components/AboutPanel.tsx` + `lib/about-panel.ts` (`openAboutPanel()` event).
+  Panel `Navbar` ke andar mount hai, isliye har page par kaam karta hai.

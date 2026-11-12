@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MapPin, Sparkles, Camera } from "lucide-react";
+import { openAboutPanel } from "@/lib/about-panel";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 import Logo from "./Logo";
@@ -75,13 +78,22 @@ export default function AboutTeaser() {
                 </ul>
               </div>
 
-              <Link
-                href="/about"
-                className="group mt-6 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-neon transition-colors hover:text-neon-soft"
-              >
-                Full story, mission &amp; why brands choose us
-                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <button
+                  type="button"
+                  onClick={openAboutPanel}
+                  className="group inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-neon transition-colors hover:text-neon-soft"
+                >
+                  Full story, mission &amp; why brands choose us
+                  <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+                <Link
+                  href="/about"
+                  className="text-[10px] font-semibold uppercase tracking-[0.16em] text-faint transition-colors hover:text-neon"
+                >
+                  Open as page
+                </Link>
+              </div>
             </div>
           </Reveal>
         </div>

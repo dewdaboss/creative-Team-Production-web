@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Sparkles } from "lucide-react";
+import AboutPanel from "./AboutPanel";
+import { openAboutPanel } from "@/lib/about-panel";
 import Logo from "./Logo";
 import { site } from "@/lib/site";
 
@@ -64,17 +66,29 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-8 lg:flex">
-            {LINKS.map((l) => (
-              <a
-                key={l.href}
-                href={homeHref(l.href)}
-                className="group relative text-[13px] font-medium uppercase tracking-[0.14em] text-mute transition-colors duration-300 hover:text-paper"
-              >
-                {l.label}
-                <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-neon shadow-glow transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
+          <nav className="hidden items-center gap-7 lg:flex xl:gap-8">
+            {LINKS.map((l) =>
+              l.href === "#about" ? (
+                <button
+                  key={l.href}
+                  type="button"
+                  onClick={openAboutPanel}
+                  className="group relative text-[13px] font-medium uppercase tracking-[0.14em] text-mute transition-colors duration-300 hover:text-paper"
+                >
+                  {l.label}
+                  <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-neon shadow-glow transition-all duration-300 group-hover:w-full" />
+                </button>
+              ) : (
+                <a
+                  key={l.href}
+                  href={homeHref(l.href)}
+                  className="group relative text-[13px] font-medium uppercase tracking-[0.14em] text-mute transition-colors duration-300 hover:text-paper"
+                >
+                  {l.label}
+                  <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-neon shadow-glow transition-all duration-300 group-hover:w-full" />
+                </a>
+              )
+            )}
           </nav>
 
           <div className="hidden lg:block">
@@ -117,20 +131,38 @@ export default function Navbar() {
               </button>
             </div>
             <nav className="flex flex-1 flex-col items-center justify-center gap-2 px-8">
-              {LINKS.map((l, i) => (
-                <motion.a
-                  key={l.href}
-                  href={homeHref(l.href)}
-                  onClick={() => setOpen(false)}
-                  initial={{ opacity: 0, y: 26 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ delay: 0.06 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full rounded-2xl border border-transparent px-6 py-4 text-center font-display text-2xl font-bold text-paper transition-all hover:border-line hover:bg-panel hover:text-neon"
-                >
-                  {l.label}
-                </motion.a>
-              ))}
+              {LINKS.map((l, i) =>
+                l.href === "#about" ? (
+                  <motion.button
+                    key={l.href}
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      window.setTimeout(openAboutPanel, 260);
+                    }}
+                    initial={{ opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ delay: 0.06 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full rounded-2xl border border-transparent px-6 py-4 text-center font-display text-2xl font-bold text-paper transition-all hover:border-line hover:bg-panel hover:text-neon"
+                  >
+                    {l.label}
+                  </motion.button>
+                ) : (
+                  <motion.a
+                    key={l.href}
+                    href={homeHref(l.href)}
+                    onClick={() => setOpen(false)}
+                    initial={{ opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ delay: 0.06 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full rounded-2xl border border-transparent px-6 py-4 text-center font-display text-2xl font-bold text-paper transition-all hover:border-line hover:bg-panel hover:text-neon"
+                  >
+                    {l.label}
+                  </motion.a>
+                )
+              )}
               <motion.a
                 href={homeHref("#booking")}
                 onClick={() => setOpen(false)}
@@ -171,6 +203,9 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* in-page About panel (opens over the current page) */}
+      <AboutPanel />
     </>
   );
 }
