@@ -66,7 +66,7 @@ export default function Services() {
               <motion.div
                 layout={reduce ? false : "position"}
                 key={service.id}
-                className={`overflow-hidden rounded-2xl border bg-panel/70 backdrop-blur-xl transition-colors duration-300 ${
+                className={`overflow-hidden rounded-2xl border bg-panel/85  transition-colors duration-300 ${
                   open ? "border-neon/40" : "border-neon/20"
                 }`}
               >
@@ -136,7 +136,7 @@ export default function Services() {
             return (
               <article
                 key={service.id}
-                className={`group flex min-h-52 flex-col rounded-2xl border border-neon/20 bg-panel/70 p-5 backdrop-blur-xl transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-neon/45 ${
+                className={`group flex min-h-52 flex-col rounded-2xl border border-neon/20 bg-panel/85 p-5  transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-neon/45 ${
                   index === SERVICES.length - 1 ? "lg:col-start-2" : ""
                 }`}
               >

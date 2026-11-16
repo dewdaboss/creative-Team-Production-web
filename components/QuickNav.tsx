@@ -60,7 +60,7 @@ export default function QuickNav() {
                 key={href}
                 href={href}
                 aria-current={isActive ? "true" : undefined}
-                className={`group inline-flex shrink-0 snap-start items-center gap-2 rounded-full border px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur transition-all duration-300 active:scale-[0.97] sm:px-5 ${
+                className={`group inline-flex shrink-0 snap-start items-center gap-2 rounded-full border px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] transition-all duration-300 active:scale-[0.97] sm:px-5 ${
                   isActive
                     ? "border-neon/60 bg-neon/10 text-paper shadow-glow"
                     : "border-line bg-panel/60 text-mute hover:border-neon/45 hover:bg-panel hover:text-paper"

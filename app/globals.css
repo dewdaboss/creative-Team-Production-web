@@ -86,11 +86,14 @@ body {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+  /* Solid-ish panels: identical look on a near-black page but no
+     backdrop-filter, which is the single most expensive effect while
+     scrolling on phones. */
   .glass {
-    @apply border border-line bg-panel/70 backdrop-blur-xl;
+    @apply border border-line bg-panel/90;
   }
   .glass-strong {
-    @apply border border-line bg-[#0a0f0bd9] backdrop-blur-2xl;
+    @apply border border-line bg-[#080c09]/95;
   }
   .text-glow {
     text-shadow: 0 0 18px rgba(180, 248, 50, 0.55), 0 0 60px rgba(180, 248, 50, 0.22);
@@ -364,5 +367,48 @@ footer[id] {
   .poster-plane-a:hover,
   .poster-plane-b:hover {
     transform: none;
+  }
+}
+
+/* ---------- scroll performance (phones first) ---------- */
+/* navbar: small backdrop-filter only, solid fallback */
+.nav-glass {
+  background-color: rgba(5, 8, 6, 0.9);
+  border-bottom: 1px solid rgba(180, 248, 50, 0.14);
+}
+@supports (backdrop-filter: blur(12px)) {
+  .nav-glass {
+    background-color: rgba(5, 8, 6, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* promote only what actually animates */
+.animate-marquee,
+.animate-marquee-reverse,
+.hpw-float {
+  will-change: transform;
+}
+
+@media (max-width: 767px), (hover: none) {
+  /* flatten the 3D poster wall — huge repaint saver on phones */
+  .poster-plane-a,
+  .poster-plane-b,
+  .poster-tilt {
+    transform: none !important;
+    transform-style: flat !important;
+  }
+  /* stop infinite Ken Burns drift while scrolling on touch devices */
+  .animate-kenburns {
+    animation: none !important;
+    will-change: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none !important;
   }
 }

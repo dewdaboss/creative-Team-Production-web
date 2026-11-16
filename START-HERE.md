@@ -214,3 +214,23 @@ Services → Poster wall → About teaser → Marquee → Reviews → Footer.
   chhota "Open as page" link hai, aur home teaser me bhi.
 - Code: `components/AboutPanel.tsx` + `lib/about-panel.ts` (`openAboutPanel()` event).
   Panel `Navbar` ke andar mount hai, isliye har page par kaam karta hai.
+
+---
+
+## 15. Scroll performance (FPS) fixes — 12 Nov
+
+Mobile scrolling ko butter-smooth karne ke liye ye badlav kiye:
+
+- **Blur animations hataye** — `Reveal` aur hero heading pehle `filter: blur()` animate
+  karte the (scroll par sabse bhaari). Ab sirf `opacity + translate`.
+- **Backdrop-filter (glass blur) hataya** — cards/panels/nav links ab solid
+  `bg-panel/90` use karte hain; sirf navbar par halka `backdrop-filter: blur(12px)`
+  (`@supports` ke saath) rehta hai. Scroll par repaint khatam.
+- **3D poster wall mobile par flatten** (`@media (hover:none)`), Ken Burns drift
+  mobile par off — phone GPU par load kam.
+- **Reels autoplay band** — Poster Wall ke videos ab tap karne par chalte hain
+  (`preload="none"`), pehle 3 videos ek saath decode ho rahi thi.
+- **Portfolio grid** me `layout`/`AnimatePresence` thrash hataya, sticky tab bar
+  se blur hataya, images `quality={72}`.
+- Bade `blur-[110px]` glow circles ki jagah `radial-gradient` (same look, zero cost).
+- Navbar transition `all` → sirf colors.

@@ -52,7 +52,7 @@ export default function AboutTeaser() {
           </Reveal>
 
           <Reveal delay={0.08} className="h-full">
-            <div className="flex h-full flex-col justify-between rounded-2xl border border-neon/20 bg-panel/70 p-5 backdrop-blur-xl sm:p-6">
+            <div className="flex h-full flex-col justify-between rounded-2xl border border-neon/20 bg-panel/85 p-5  sm:p-6">
               <div>
                 <p className="text-[15px] leading-relaxed text-mute sm:text-base">
                   {ABOUT.lead}

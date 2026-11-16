@@ -51,8 +51,8 @@ export default function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-          scrolled ? "glass-strong shadow-card" : "border-b border-transparent bg-transparent"
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${
+          scrolled ? "nav-glass shadow-card" : "border-b border-transparent bg-transparent"
         }`}
       >
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">

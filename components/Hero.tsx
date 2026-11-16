@@ -18,7 +18,7 @@ export default function Hero({ heroItems = [] }: { heroItems?: GalleryItem[] }) 
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: EASE }}
-            className="inline-flex items-center gap-2.5 rounded-full border border-line bg-panel/70 px-4 py-2 backdrop-blur"
+            className="inline-flex items-center gap-2.5 rounded-full border border-line bg-panel/85 px-4 py-2"
           >
             <span className="relative inline-flex h-2 w-2 rounded-full bg-neon shadow-[0_0_10px_2px_rgba(180,248,50,0.55)]" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-neon-soft">
@@ -27,9 +27,9 @@ export default function Hero({ heroItems = [] }: { heroItems?: GalleryItem[] }) 
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 34, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1, delay: 0.12, ease: EASE }}
+            initial={{ opacity: 0, y: 26 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE }}
             className="mt-7 font-display text-[13vw] font-bold leading-[0.98] tracking-tight text-paper sm:text-6xl lg:text-7xl xl:text-[5.2rem]"
           >
             We don&apos;t just shoot content.

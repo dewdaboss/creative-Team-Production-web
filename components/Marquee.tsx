@@ -16,7 +16,7 @@ const WORDS = [
 export default function Marquee({ reverse = false }: { reverse?: boolean }) {
   const row = [...WORDS, ...WORDS];
   return (
-    <div className="relative border-y border-line bg-panel/40 py-5 backdrop-blur-sm">
+    <div className="relative border-y border-line bg-panel/40 py-5">
       <div className={`filmstrip absolute inset-x-0 top-0 ${reverse ? "opacity-30" : ""}`} />
       <div className="mask-fade-x overflow-hidden">
         <div

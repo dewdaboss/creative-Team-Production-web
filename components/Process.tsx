@@ -52,7 +52,7 @@ export default function Process() {
           description="An efficient eight-step workflow with a clear owner and outcome at every stage."
         />
 
-        <div className="rounded-2xl border border-neon/20 bg-panel/70 p-4 backdrop-blur-xl sm:p-6">
+        <div className="rounded-2xl border border-neon/20 bg-panel/85 p-4  sm:p-6">
           <div className="no-scrollbar overflow-x-auto pb-2">
             <div
               role="tablist"

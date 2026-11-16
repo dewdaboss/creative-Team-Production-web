@@ -151,8 +151,8 @@ export default function Portfolio({
   return (
     <section id="portfolio" className="relative scroll-mt-20 py-16 sm:py-24">
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-0 h-[26rem] w-[46rem] -translate-x-1/2 rounded-full bg-neon/10 blur-[110px]" />
-        <div className="absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-neon/[0.06] blur-[90px]" />
+        <div className="absolute left-1/2 top-0 h-[26rem] w-[46rem] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(180,248,50,0.13),transparent)]" />
+        <div className="absolute -right-24 bottom-0 h-72 w-72 bg-[radial-gradient(closest-side,rgba(180,248,50,0.08),transparent)]" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
@@ -167,7 +167,7 @@ export default function Portfolio({
         />
 
         {/* category tabs — sticky under the navbar on phones */}
-        <div className="sticky top-[72px] z-20 -mx-5 mt-6 bg-void/85 px-5 py-2.5 backdrop-blur-xl sm:static sm:mx-0 sm:mt-8 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
+        <div className="sticky top-[72px] z-20 -mx-5 mt-6 bg-[#040604]/95 px-5 py-2.5 sm:static sm:mx-0 sm:mt-8 sm:bg-transparent sm:px-0 sm:py-0">
           <div className="scrollbar-none flex gap-2 overflow-x-auto pb-0.5 sm:flex-wrap sm:justify-center">
             {TABS.map((t) => {
               const isActive = tab === t.id;
@@ -204,17 +204,14 @@ export default function Portfolio({
 
         {/* grid */}
         <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {visible.map((shot, i) => (
+          {visible.map((shot, i) => (
               <motion.button
                 key={`${tab}-${shot.key}`}
                 type="button"
-                layout
                 onClick={() => setActive(i)}
-                initial={reduce ? false : { opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97 }}
-                transition={{ duration: reduce ? 0 : 0.28, delay: reduce ? 0 : (i % 4) * 0.03 }}
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reduce ? 0 : 0.25, delay: reduce ? 0 : (i % 4) * 0.025 }}
                 className="group relative overflow-hidden rounded-xl border border-line bg-panel text-left shadow-card transition-colors duration-300 hover:border-neon/45 sm:rounded-2xl"
                 aria-label={`Open ${shot.title}`}
               >
@@ -234,13 +231,14 @@ export default function Portfolio({
                       src={shot.src}
                       alt={`${shot.title} — ${shot.category} by ${site.name}`}
                       fill
+                      quality={72}
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                     />
                   )}
                   <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
                   {shot.video && (
-                    <span className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-neon backdrop-blur-sm">
+                    <span className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-neon">
                       <Play size={12} />
                     </span>
                   )}
@@ -255,7 +253,6 @@ export default function Portfolio({
                 </div>
               </motion.button>
             ))}
-          </AnimatePresence>
         </div>
 
         {/* expand / CTA row */}

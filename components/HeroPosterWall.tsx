@@ -148,7 +148,7 @@ export default function HeroPosterWall({ items = [] }: { items?: GalleryItem[] }
                 className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent"
                 aria-hidden
               />
-              <span className="absolute bottom-2 left-2 rounded-full border border-neon/30 bg-black/60 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-neon-soft backdrop-blur-sm sm:px-2.5 sm:py-1 sm:text-[10px]">
+              <span className="absolute bottom-2 left-2 rounded-full border border-neon/30 bg-black/60 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-neon-soft sm:px-2.5 sm:py-1 sm:text-[10px]">
                 {p.label}
               </span>
               {p.rec && (
@@ -165,7 +165,7 @@ export default function HeroPosterWall({ items = [] }: { items?: GalleryItem[] }
       {CHIPS.map((chip) => (
         <div
           key={chip.label}
-          className={`absolute ${chip.pos} flex items-center gap-2 rounded-2xl border border-white/10 bg-black/55 px-3.5 py-2.5 shadow-card backdrop-blur-md`}
+          className={`absolute ${chip.pos} flex items-center gap-2 rounded-2xl border border-white/10 bg-black/70 px-3.5 py-2.5 shadow-card`}
         >
           <chip.icon size={15} className="text-neon" />
           <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-paper">

@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Play } from "lucide-react";
 import Reveal from "./Reveal";
 import { POSTER_ROTATES, POSTER_TILTS } from "@/lib/gallery-rows";
 import { SHOOT_PHOTOS, WALL_A_SHOOT, WALL_B_SHOOT } from "@/lib/shoot-photos";
@@ -90,7 +92,7 @@ export default function PosterStrip({ rowA = [], rowB = [] }: { rowA?: GalleryIt
           </div>
 
           {/* center glow */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon/10 blur-[90px]" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[680px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(closest-side,rgba(180,248,50,0.10),transparent)]" />
         </div>
 
         <div className="mt-10 flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-faint">
@@ -104,6 +106,10 @@ export default function PosterStrip({ rowA = [], rowB = [] }: { rowA?: GalleryIt
 }
 
 function PosterCard({ poster, index }: { poster: Poster; index: number }) {
+  // Reels don't autoplay: decoding several videos while scrolling is the main
+  // cause of stutter on phones. Tap to play instead.
+  const [playing, setPlaying] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24, rotate: 3 }}
@@ -116,18 +122,36 @@ function PosterCard({ poster, index }: { poster: Poster; index: number }) {
       <div className="relative h-[280px] w-[190px] overflow-hidden rounded-2xl border border-line bg-panel shadow-card transition-all duration-500 group-hover:border-neon/40 group-hover:shadow-glow sm:h-[340px] sm:w-[230px]">
         <div className="animate-kenburns absolute inset-0">
           {poster.video ? (
-            <video
-              src={poster.src}
-              muted
-              loop
-              autoPlay
-              playsInline
-              preload="metadata"
-              aria-label={poster.title}
-              className="h-full w-full object-cover"
-            />
+            <>
+              <video
+                src={poster.src}
+                muted
+                loop
+                playsInline
+                preload="none"
+                autoPlay={playing}
+                aria-label={poster.title}
+                className="h-full w-full object-cover"
+              />
+              {!playing && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setPlaying(true);
+                  }}
+                  aria-label={`Play ${poster.title}`}
+                  className="absolute inset-0 z-10 flex items-center justify-center bg-black/35 transition-colors hover:bg-black/25"
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-neon/40 bg-black/70 text-neon">
+                    <Play size={18} className="fill-current" />
+                  </span>
+                </button>
+              )}
+            </>
           ) : (
-            <Image src={poster.src} alt={poster.title} fill className="object-cover" sizes="230px" />
+            <Image src={poster.src} alt={poster.title} fill quality={70} className="object-cover" sizes="230px" />
           )}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
@@ -135,11 +159,11 @@ function PosterCard({ poster, index }: { poster: Poster; index: number }) {
           <p className="font-display text-sm font-bold leading-tight text-white">{poster.title}</p>
           <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-neon-soft">{poster.cat}</p>
         </div>
-        <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-black/60 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white/80 backdrop-blur">
+        <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-black/60 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white/80">
           {poster.video ? "CTP Reel" : "CTP Original"}
         </div>
         {poster.video && (
-          <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-[9px] font-bold tracking-[0.16em] text-white/80 backdrop-blur">
+          <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-[9px] font-bold tracking-[0.16em] text-white/80">
             <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
             LIVE
           </span>

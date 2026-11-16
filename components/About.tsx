@@ -43,7 +43,7 @@ export default function About() {
 
           <div className="flex flex-col">
             <Reveal>
-              <div className="rounded-2xl border border-neon/20 bg-panel/70 p-5 backdrop-blur-xl sm:p-6">
+              <div className="rounded-2xl border border-neon/20 bg-panel/85 p-5  sm:p-6">
                 <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-neon">Our story</p>
                 <p className="mt-3 text-base leading-relaxed text-mute sm:text-lg">
                   {ABOUT.lead.replace(
@@ -57,7 +57,7 @@ export default function About() {
 
             <div className="mt-4 grid flex-1 gap-4 sm:grid-cols-2">
               <Reveal delay={0.08} className="h-full">
-                <article className="h-full rounded-2xl border border-neon/20 bg-panel/70 p-5 backdrop-blur-xl transition-colors hover:border-neon/40">
+                <article className="h-full rounded-2xl border border-neon/20 bg-panel/85 p-5  transition-colors hover:border-neon/40">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neon/10 text-neon">
                     <Target size={18} />
                   </span>
@@ -69,7 +69,7 @@ export default function About() {
               </Reveal>
 
               <Reveal delay={0.14} className="h-full">
-                <article className="h-full rounded-2xl border border-neon/20 bg-panel/70 p-5 backdrop-blur-xl transition-colors hover:border-neon/40">
+                <article className="h-full rounded-2xl border border-neon/20 bg-panel/85 p-5  transition-colors hover:border-neon/40">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neon/10 text-neon">
                     <Telescope size={18} />
                   </span>
