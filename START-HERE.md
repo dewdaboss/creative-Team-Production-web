@@ -234,3 +234,20 @@ Mobile scrolling ko butter-smooth karne ke liye ye badlav kiye:
   se blur hataya, images `quality={72}`.
 - Bade `blur-[110px]` glow circles ki jagah `radial-gradient` (same look, zero cost).
 - Navbar transition `all` → sirf colors.
+
+---
+
+## 16. Troubleshooting: "Invalid credentials" / admin login error
+
+Agar `/admin` par login na ho (Invalid credentials) ya gallery DB se load na ho:
+
+1. **`.env.local` file check karein** — project root me honi chahiye
+   (zip ke andar pehle se hoti hai). Missing ho to dobara bana lein:
+   `ADMIN_USER=admin` · `ADMIN_PASS=CTPstudio@2026` · `SESSION_SECRET=…` ·
+   `SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY` · `SUPABASE_STORAGE_BUCKET=gallery`.
+2. `npm run dev` (ya server) ko **restart** karein — env file sirf start par padhi jaati hai.
+3. Login: user `admin`, password `CTPstudio@2026`
+   (ab code me bhi yahi fallback hai, `lib/env.ts` — env file missing ho to bhi
+   yahi password chalega).
+4. Supabase na mile to site JSON store se chalti hai (koi error nahi dikhega),
+   lekin admin edits DB me save karne ke liye env keys zaroori hain.
