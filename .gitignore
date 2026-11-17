@@ -33,3 +33,7 @@ next-env.d.ts
 /data/stats-runtime.json
 /public/uploads/*
 !/public/uploads/.gitkeep
+
+# hindi-project build cache (fonts auto-downloaded)
+/hindi-project/.fonts/
+__pycache__/
